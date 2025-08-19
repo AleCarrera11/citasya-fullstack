@@ -19,9 +19,12 @@ interface SpecialistProfileProps {
 
 export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
   const defaultSpecialist = {
-    nombre: "Alejandra Carrera",
+    name: "Alejandra Carrera",
     cedula: "28310220",
-    telefono: "584143252122",
+    phone: "584143252122",
+    specialty: "",
+    email: "",
+    services: [],
     notas: "Alergias...",
     totalInvertido: "250$"
   };
@@ -149,12 +152,7 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
           </button>
         </div>
       </div>
-          {showEditModal && (
-        <EditSpecialist
-          onClose={() => setShowEditModal(false)}
-          specialistData={SpecialistData}
-        />
-      )}
+          
     
       {showDeleteModal && (
         <DeleteSpecialist

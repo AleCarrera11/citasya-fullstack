@@ -51,7 +51,7 @@ export const Servicios: React.FC = () => {
   const [loadingServices, setLoadingServices] = useState(true);
   const [servicesError, setServicesError] = useState<string | null>(null);
 
-  const API_URL = 'http://localhost:3000/admin';
+  const API_URL = 'http://localhost:4000/admin';
 
   // Opciones de estado estáticas con "Todos"
   const statusOptions = ['Todos', 'Activo', 'Inactivo'];

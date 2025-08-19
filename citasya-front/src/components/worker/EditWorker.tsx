@@ -32,10 +32,14 @@ export const EditSpecialist: React.FC<EditSpecialistProps> = ({
   const API_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL ?? ''}/admin`;
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | { target: { name?: string; value: string | string[] } }
   ) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if ('target' in e && 'value' in e.target) {
+      const { name, value } = e.target;
+      if (name) {
+        setFormData(prev => ({ ...prev, [name]: value }));
+      }
+    }
   };
 
   // Para servicios (array) creamos un manejador separado
@@ -112,7 +116,7 @@ export const EditSpecialist: React.FC<EditSpecialistProps> = ({
                         { value: 'tinte', label: 'Tinte' },
                         { value: 'pedicura', label: 'Pedicura' }
                     ]}
-                    value={formData.especialidad}
+                    value={formData.specialty}
                     onChange={handleChange}
                     className="mt-6"
                     />

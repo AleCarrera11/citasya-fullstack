@@ -49,14 +49,17 @@ export const NuevaCita: React.FC<NuevaCitaProps> = ({ onClose, initialName = "",
 
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+      | { target: { name?: string; value: string | string[] } }
+  ) => {
     const { name, value } = e.target;
 
-    // Si la categoría cambia, reinicia el servicio.
     if (name === 'categoria') {
-      setFormData(prev => ({ ...prev, [name]: value, servicio: '' }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData(prev => ({ ...prev, [name]: typeof value === 'string' ? value : (Array.isArray(value) ? value[0] : ''), servicio: '' }));
+    } else if (name) {
+      setFormData(prev => ({ ...prev, [name]: typeof value === 'string' ? value : (Array.isArray(value) ? value[0] : '') }));
     }
   };
 

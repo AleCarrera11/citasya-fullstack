@@ -19,7 +19,7 @@ interface Service {
   name: string;
 }
 
-export enum AppointmentStatus {
+enum AppointmentStatus {
   Pendiente = "Pendiente",
   Confirmado = "Confirmado",
   Cancelado = "Cancelado",
@@ -38,6 +38,7 @@ interface Appointment {
 }
 
 // Interfaz para la data de la cita que se pasa a la tabla
+// Se ha unificado el nombre de la propiedad 'professional' para ser consistente con la tabla.
 interface AppointmentDataForTable {
     id: string;
     status: string;
@@ -45,7 +46,7 @@ interface AppointmentDataForTable {
     date: string;
     clientName: string;
     time: string;
-    especialista: string;
+    professional: string; // Se cambió 'especialista' a 'professional'
 }
 
 export const Citas: React.FC = () => {
@@ -251,7 +252,7 @@ export const Citas: React.FC = () => {
                   date: a.date,
                   time: a.hour,
                   clientName: a.client.name,
-                  especialista: a.worker.name, // Cambio aquí de 'professional' a 'especialista'
+                  professional: a.worker.name, 
                 }))}
                 onMoreInfo={handleMoreInfo}
                 onCancel={handleCancelAppointment}

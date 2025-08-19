@@ -2,7 +2,6 @@
 
 import React from 'react';
 
-// La interfaz de datos para la tabla se mantiene igual, ya que recibe los datos procesados
 interface AppointmentData {
   id: string;
   status: string;
