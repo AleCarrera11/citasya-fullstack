@@ -1,8 +1,6 @@
 import * as React from "react";
 import { Calendar } from "./Calendar";
-import { VscAdd, VscEdit } from "react-icons/vsc";
 import { ServiceFormField } from "../InputField";
-import { EditSpecialist }from "./EditWorker";
 import { DeleteSpecialist } from "./DeleteWorker";
 
 interface SpecialistProfileProps {
@@ -46,7 +44,6 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
 
   const SpecialistData = specialist || defaultSpecialist; 
   const [formData, setFormData] = React.useState({ ...SpecialistData });
-  const [showEditModal, setShowEditModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   if (!specialist) {
@@ -72,10 +69,7 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
             <h3 className="basis-auto rotate-[7.710460847772601e-17rad]">
               Datos del especialista
             </h3>
-            <VscEdit onClick={() => setShowEditModal(true)} 
-              size={24}
-              className="text-yellow-700/60 cursor-pointer hover:text-stone-500 transition-colors"
-            />
+            
           </div>
           <div className="flex gap-5 max-md:flex-col max-md:">
             <div className="w-6/12 max-md:ml-0 max-md:w-full">

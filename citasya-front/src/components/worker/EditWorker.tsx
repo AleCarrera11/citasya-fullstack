@@ -42,10 +42,6 @@ export const EditSpecialist: React.FC<EditSpecialistProps> = ({
     }
   };
 
-  // Para servicios (array) creamos un manejador separado
-  const handleServicesChange = (selectedServices: string[]) => {
-    setFormData(prev => ({ ...prev, services: selectedServices }));
-  };
 
   const handleEditSpecialist = async () => {
     setLoading(true);

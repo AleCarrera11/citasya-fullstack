@@ -1,4 +1,5 @@
 import * as React from "react";
+import { VscChevronLeft, VscChevronRight } from "react-icons/vsc";
 
 export function Calendar() {
   return (
@@ -9,18 +10,10 @@ export function Calendar() {
         </h3>
         <div className="flex gap-2 items-start self-stretch my-auto">
           <button className="flex gap-2.5 items-start p-4 w-[46px]">
-            <img
-              src="https://api.builder.io/api/v1/image/assets/ed74dcfaa95a44a29728b63f96c1becf/ab6c168cf98ce1f4ecda8c959db0985d42a71552?placeholderIfAbsent=true"
-              alt="Previous month"
-              className="object-contain w-3.5 aspect-square"
-            />
+            <VscChevronLeft />
           </button>
           <button className="flex gap-2.5 items-start p-4 rotate-[3.141592653589793rad] w-[46px]">
-            <img
-              src="https://api.builder.io/api/v1/image/assets/ed74dcfaa95a44a29728b63f96c1becf/b04e968f48003a9c9c364d828cceae707d908fe4?placeholderIfAbsent=true"
-              alt="Next month"
-              className="object-contain w-3.5 aspect-square"
-            />
+          <VscChevronRight />
           </button>
         </div>
       </header>

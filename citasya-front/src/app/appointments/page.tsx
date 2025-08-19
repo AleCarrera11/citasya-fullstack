@@ -49,7 +49,7 @@ interface AppointmentDataForTable {
     professional: string; // Se cambió 'especialista' a 'professional'
 }
 
-export const Citas: React.FC = () => {
+const Citas: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedEspecialista, setSelectedEspecialista] = useState('');
   const [selectedService, setSelectedService] = useState('');

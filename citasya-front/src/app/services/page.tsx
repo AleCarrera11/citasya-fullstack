@@ -27,7 +27,7 @@ interface ServiceData {
   status: string;
 }
 
-export const Servicios: React.FC = () => {
+const Servicios: React.FC = () => {
   // Estados para los diferentes modales y datos
   const [showNewModal, setShowNewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);

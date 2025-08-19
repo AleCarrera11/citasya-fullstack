@@ -137,7 +137,7 @@ function CenterDataForm() {
 }
 
 // Componente principal de la página
-export function Perfil() {
+function Perfil() {
   
 
   return (
