@@ -7,44 +7,23 @@ interface SpecialistProfileProps {
   specialist: {
     name: string;
     phone: string;
-    specialty: string;
-    cedula: string;
+    specialties: string[];
+    documentId: string;
     email: string;
     services: string[];
   } | null;
 }
 
-
 export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
-  const defaultSpecialist = {
-    name: "Alejandra Carrera",
-    cedula: "28310220",
-    phone: "584143252122",
-    specialty: "",
-    email: "",
-    services: [],
-    notas: "Alergias...",
-    totalInvertido: "250$"
-  };
-  
-
-  // Para servicios (array) creamos un manejador separado
-  const handleServicesChange = (selectedServices: string[]) => {
-    setFormData(prev => ({ ...prev, services: selectedServices }));
-  };
-
-   // Opciones para servicios: si tienes un catálogo, pásalo aquí
-  const availableServices = [
-    { value: 'consulta', label: 'Consulta' },
-    { value: 'cirugia', label: 'Cirugía' },
-    { value: 'terapia', label: 'Terapia' },
-    // ... agrega los que uses
-  ];
-
-
-  const SpecialistData = specialist || defaultSpecialist; 
-  const [formData, setFormData] = React.useState({ ...SpecialistData });
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+
+  const [selectedServices, setSelectedServices] = React.useState<string[]>(specialist?.services ?? []);
+
+  React.useEffect(() => {
+    if (specialist) {
+      setSelectedServices(specialist.services);
+    }
+  }, [specialist]);
 
   if (!specialist) {
     return (
@@ -55,6 +34,33 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
       </section>
     );
   }
+  
+  const formattedServices = selectedServices.map(serviceName => ({
+      value: serviceName,
+      label: serviceName,
+  }));
+
+  const handleServicesChange = (
+    e:
+      | React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
+      | { target: { name?: string; value: string | string[] } }
+  ) => {
+    if ("target" in e && "selectedOptions" in e.target) {
+      // HTMLSelectElement event
+      const selectedOptions = Array.from(
+        (e.target as HTMLSelectElement).selectedOptions,
+        (option) => option.value
+      );
+      setSelectedServices(selectedOptions);
+    } else if ("target" in e && Array.isArray(e.target.value)) {
+      // Custom event with array value
+      setSelectedServices(e.target.value as string[]);
+    } else if ("target" in e) {
+      // Fallback for string value
+      setSelectedServices([e.target.value as string]);
+    }
+  };
+  
   return (
     <section className="ml-5 w-full h-full ">
       <div className="px-12 py-14 mx-auto w-full rounded-3xl bg-green-200/40 max-md:px-5 max-md:mt-7 max-md:max-w-full">
@@ -69,12 +75,11 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
             <h3 className="basis-auto rotate-[7.710460847772601e-17rad]">
               Datos del especialista
             </h3>
-            
           </div>
           <div className="flex gap-5 max-md:flex-col max-md:">
             <div className="w-6/12 max-md:ml-0 max-md:w-full">
               <div className="flex flex-col items-start w-full text-base text-neutral-600 max-md:mt-6">
-                 <ServiceFormField
+                <ServiceFormField
                   label="Nombre del especialista:"
                   value={specialist.name}
                   readOnly
@@ -87,8 +92,8 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
                   className="w-full"
                 />
                 <ServiceFormField
-                  label="Especialidad"
-                  value={specialist.specialty}
+                  label="Especialidades"
+                  value={specialist.specialties.join(", ")}
                   readOnly
                   className="w-full"
                 />
@@ -98,7 +103,7 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
               <div className="flex flex-col items-start w-full text-base text-neutral-600 max-md:mt-6">
                 <ServiceFormField
                   label="Cédula"
-                  value={specialist.cedula}
+                  value={specialist.documentId}
                   readOnly
                   className="w-full"
                 />
@@ -116,14 +121,10 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
         <div className="flex flex-wrap gap-10 max-md:max-w-full">
           <ServiceFormField
             label="Servicios asignados:"
-            options={availableServices}
+            options={formattedServices}
             multiple
-            value={formData.services}
-            onChange={(e) => {
-              if ('target' in e && Array.isArray(e.target.value)) {
-                handleServicesChange(e.target.value);
-              }
-            }}
+            value={selectedServices}
+            onChange={handleServicesChange}
             placeholder="Selecciona servicios"
             whiteBg={true}
             className="w-full max-md:w-full"
@@ -131,7 +132,7 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
         </div>
         <div className="flex flex-col justify-center">
           <h3 className="mt-11 text-xl font-semibold rotate-[7.710460847772601e-17rad] text-neutral-600 max-md:mt-10">
-              Disponibilidad
+            Disponibilidad
           </h3>
           <div className="flex justify-center items-center w-full mt-4">
             <Calendar />
@@ -146,13 +147,11 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
           </button>
         </div>
       </div>
-          
-    
       {showDeleteModal && (
         <DeleteSpecialist
           onClose={() => setShowDeleteModal(false)}
-          onConfirm={() => { 
-            // Lógica de borrado 
+          onConfirm={() => {
+            // Lógica de borrado
             setShowDeleteModal(false);
           }}
         />

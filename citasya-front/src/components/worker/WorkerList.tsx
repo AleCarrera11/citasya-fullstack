@@ -3,36 +3,51 @@ import { VscAdd, VscSearch } from "react-icons/vsc";
 import { NewSpecialist } from "./NewWorker";
 import { SpecialistProfile } from "./WorkerProfile";
 
-const specialistsData = [
-  {
-    id: 1,
-    name: "Paola Quintero",
-    specialty: "Manicurista",
-    phone: "584143252122",
-    cedula: "28310220",
-    email: "paolaq@gmail.com",
-    services: ["Manos normales", "Pies normales", "Manos semi-permanente", "Pies semi-permanente"],
-  },
-  {
-    id: 2,
-    name: "Juan Pérez",
-    specialty: "Pediatra",
-    phone: "123456789",
-    cedula: "12345678",
-    email: "juanperez@mail.com",
-    services: ["Consulta general", "Vacunación"],
-  },
-];
+type Specialty = {
+  name: string;
+};
+
+type Service = {
+  id: number;
+  name: string;
+  specialty: Specialty;
+};
+
+type Specialist = {
+  id: number;
+  name: string;
+  specialties: string[];
+  phone: string;
+  documentId: string;
+  email: string;
+  services: string[];
+};
+
+// Esta es la estructura que viene del backend
+interface BackendSpecialist {
+  id: number;
+  name: string;
+  phone: string;
+  documentId: string;
+  email: string;
+  services: Service[];
+}
 
 type SpecialistCardProps = {
   id: number;
   name: string;
-  specialty: string;
+  specialties: string[];
   onClick: (id: number) => void;
   selected: boolean;
 };
 
-function SpecialistCard({ id, name, specialty, onClick, selected }: SpecialistCardProps) {
+function SpecialistCard({
+  id,
+  name,
+  specialties,
+  onClick,
+  selected,
+}: SpecialistCardProps) {
   return (
     <div
       onClick={() => onClick(id)}
@@ -40,22 +55,73 @@ function SpecialistCard({ id, name, specialty, onClick, selected }: SpecialistCa
         ${selected ? "bg-gray-100" : "bg-white"}`}
     >
       <h3 className="text-xl tracking-tight leading-none text-black">{name}</h3>
-      <p className="text-sm tracking-tight leading-6 text-neutral-600">{specialty}</p>
+      {specialties.length > 0 && (
+        <p className="text-sm tracking-tight leading-6 text-neutral-600">
+          {specialties.join(", ")}
+        </p>
+      )}
     </div>
   );
 }
 
-
 export function SpecialistList() {
+  const [specialists, setSpecialists] = React.useState<Specialist[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
   const [showNewSpecialistModal, setShowNewSpecialistModal] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedSpecialistId, setSelectedSpecialistId] = React.useState<number | null>(null);
 
-  const filteredSpecialists = specialistsData.filter((spec) =>
+  React.useEffect(() => {
+    async function fetchSpecialists() {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/workers`
+        );
+        if (!res.ok) throw new Error("Error al obtener especialistas");
+        const data: BackendSpecialist[] = await res.json();
+        
+        // Mapeamos los datos del backend a la estructura del frontend
+        const formattedData: Specialist[] = data.map((spec) => {
+          const uniqueSpecialties = Array.from(
+            new Set(spec.services.map((service) => service.specialty.name))
+          );
+          
+          return {
+            id: spec.id,
+            name: spec.name,
+            specialties: uniqueSpecialties,
+            phone: spec.phone,
+            documentId: spec.documentId,
+            email: spec.email,
+            services: spec.services.map((service) => service.name),
+          };
+        });
+        
+        setSpecialists(formattedData);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Error desconocido");
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSpecialists();
+  }, []);
+
+  const filteredSpecialists = specialists.filter((spec) =>
     spec.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const selectedSpecialist = specialistsData.find((spec) => spec.id === selectedSpecialistId);
+  const selectedSpecialist = specialists.find(
+    (spec) => spec.id === selectedSpecialistId
+  );
+
+  if (loading) return <p>Cargando especialistas...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="flex w-full max-h-[calc(100vh-100px)] max-md:flex-col max-md:max-h-auto">
@@ -82,7 +148,7 @@ export function SpecialistList() {
                 key={spec.id}
                 id={spec.id}
                 name={spec.name}
-                specialty={spec.specialty}
+                specialties={spec.specialties}
                 onClick={setSelectedSpecialistId}
                 selected={selectedSpecialistId === spec.id}
               />
@@ -91,7 +157,12 @@ export function SpecialistList() {
         </div>
         {showNewSpecialistModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-300/50 backdrop-blur-sm">
-            <NewSpecialist onClose={() => setShowNewSpecialistModal(false)} />
+            <NewSpecialist
+              onClose={() => setShowNewSpecialistModal(false)}
+              onWorkerAdded={(newSpecialist: Specialist) => {
+                setSpecialists((prev) => [...prev, newSpecialist]);
+              }}
+            />
           </div>
         )}
       </aside>

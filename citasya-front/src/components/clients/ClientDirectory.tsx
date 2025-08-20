@@ -36,7 +36,7 @@ export function ClientDirectory() {
   const fetchClients = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/admin/clients');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/clients`);
       if (!response.ok) {
         throw new Error(`Error en la respuesta de la red: ${response.statusText}`);
       }

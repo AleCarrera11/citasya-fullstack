@@ -41,9 +41,6 @@ export class Worker {
     })
     status!: WorkerStatus;
 
-    @Column({ type: "text", nullable: true })
-    notas!: string;
-
     @Column({ type: "int", nullable: true })
     center_id!: number;
 

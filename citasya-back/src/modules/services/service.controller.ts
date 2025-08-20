@@ -14,6 +14,23 @@ export class ServicesController {
         }
     }
 
+    // Nuevo método para obtener servicios por ID de especialidad
+    async getServicesBySpecialtyId(req: Request, res: Response): Promise<Response> {
+        const specialtyId = parseInt(req.params.specialtyId);
+        if (isNaN(specialtyId)) {
+            return res.status(400).json({ message: 'ID de especialidad inválido.' });
+        }
+        
+        try {
+            // Se llama al método del servicio para obtener los datos
+            const services = await servicesService.findBySpecialtyId(specialtyId);
+            return res.status(200).json(services);
+        } catch (error) {
+            console.error(`Error al obtener servicios para la especialidad con ID ${specialtyId}:`, error);
+            return res.status(500).json({ message: 'Error al obtener los servicios de la especialidad.' });
+        }
+    }
+
     async createService(req: Request, res: Response): Promise<Response> {
         const serviceData = req.body;
         try {

@@ -40,7 +40,7 @@ export const Header: React.FC = () => {
 
   return (
     <>
-      <header className="z-10 flex items-center justify-between px-20 py-0 w-full shadow-md bg-neutral-100 h-[117px] max-md:flex-wrap max-md:px-10 max-sm:flex-col max-sm:gap-4 max-sm:items-start max-sm:p-5 max-sm:h-auto">
+      <header className="z-10 flex items-center justify-between px-20 py-0 w-full shadow-lg bg-neutral-100 h-[117px] max-md:flex-wrap max-md:px-10 max-sm:flex-col max-sm:gap-4 max-sm:items-start max-sm:p-5 max-sm:h-auto">
         <div className="flex items-center gap-50 max-md:gap-5 max-sm:flex-wrap max-sm:gap-4">
             <Link href="/" className="mr-auto text-3xl font-bold text-neutral-600 max-sm:text-2xl" style={{ fontFamily: 'Poppins, sans-serif' }}>
               CitasYa

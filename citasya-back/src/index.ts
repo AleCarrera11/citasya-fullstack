@@ -15,7 +15,7 @@ import appointmentRoutes from './modules/appointments/appointment.routes.js';
 //import centerRoutes from './modules/centers/center.routes.js';
 import clientRoutes from './modules/clients/client.routes.js';
 //import userRoutes from './modules/users/user.routes.js';
-//import workerRoutes from './modules/workers/worker.routes.js';
+import workerRoutes from './modules/workers/worker.routes.js';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
     res.send('¡Backend del agente de WhatsApp funcionando!');
 });
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 AppDataSource.initialize()
     .then(() => {
@@ -49,7 +49,7 @@ AppDataSource.initialize()
         app.use('/admin/appointments', appointmentRoutes);
         //app.use('/admin/centers', centerRoutes);
         app.use('/admin/clients', clientRoutes);
-        //app.use('/admin/workers', workerRoutes);
+        app.use('/admin/workers', workerRoutes);
         //app.use('/admin/users', userRoutes);
 
         app.listen(PORT, () => {

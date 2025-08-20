@@ -14,16 +14,14 @@ interface NewServiceProps {
   specialties: SpecialtyData[];
 }
 
-// Se renombra el componente y sus props
 export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) => {
-  // Estado del formulario
   const [formData, setFormData] = useState({
     name: '',
-    specialty_id: '',
+    specialty_id: '', 
     description: '',
     minutes_duration: '',
     price: '',
-    status: 'Activo', 
+    status: 'Activo',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +35,7 @@ export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) 
   ) => {
     const { name, value } = e.target;
     if (!name) return;
-    setFormData(prev => ({ ...prev, [name]: typeof value === 'string' ? value : value[0] }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleAddService = async () => {
@@ -46,22 +44,18 @@ export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) 
     try {
       const payload = {
         ...formData,
-        minutes_duration: parseInt(formData.minutes_duration),
+        specialty_id: parseInt(formData.specialty_id, 10), 
+        minutes_duration: parseInt(formData.minutes_duration, 10),
         price: parseFloat(formData.price),
-        specialty_id: parseInt(formData.specialty_id)
       };
 
       const response = await fetch(`${API_URL}/services`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        throw new Error('Error al agregar el servicio');
-      }
+      if (!response.ok) throw new Error('Error al agregar el servicio');
 
       await response.json();
       onClose();
@@ -71,14 +65,12 @@ export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) 
         console.error('Failed to add service:', err);
       } else {
         setError('Error desconocido al agregar el servicio');
-        console.error('Failed to add service:', err);
       }
     } finally {
       setLoading(false);
     }
   };
 
-  // Opciones de estado para el select
   const statusOptions = ['Activo', 'Inactivo'].map(option => ({
     value: option,
     label: option,
@@ -86,29 +78,26 @@ export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) 
 
   return (
     <main className="max-w-[679px]">
-      <div className="flex flex-col py-9 w-full bg-neutral-100 rounded-[30px] shadow-lg max-md:max-w-full">
-        {/* Header */}
-        <header className="flex flex-col self-end mr-11 max-w-full text-4xl font-bold leading-none text-center text-stone-400 w-[404px] max-md:mr-2.5">
+      <div className="flex flex-col py-9 w-full bg-neutral-100 rounded-[30px] shadow-lg">
+        <header className="flex flex-col self-end mr-11 text-4xl font-bold leading-none text-center text-stone-400 w-[404px]">
           <button
             onClick={onClose}
             aria-label="Cerrar modal"
-            className="self-end object-contain w-[25px] h-[25px] cursor-pointer"
+            className="self-end w-[25px] h-[25px] cursor-pointer"
           >
-            <VscChromeClose className="text-neutral-600 hover:text-neutral-800 transition-colors duration-200" />
+            <VscChromeClose className="text-neutral-600 hover:text-neutral-800 transition-colors" />
           </button>
-          <h1 className="self-center text-yellow-700/60" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
-            Nuevo Servicio
-          </h1>
+          <h1 className="self-center text-yellow-700/60">Nuevo Servicio</h1>
         </header>
 
-        {/* Form */}
-        <form className="flex flex-col px-10 mt-8 w-full text-neutral-600 max-md:px-5 max-md:max-w-full">
+        <form className="flex flex-col px-10 mt-8 w-full text-neutral-600">
           {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-          <div className="flex flex-wrap gap-10 max-md:max-w-full">
+
+          <div className="flex flex-wrap gap-10">
             <ServiceFormField
               label="Nombre del servicio:"
               placeholder="Ingresa nombre..."
-              className="flex-1 grow shrink-0 basis-0 w-fit"
+              className="flex-1"
               name="name"
               value={formData.name}
               onChange={handleChange}
@@ -117,9 +106,9 @@ export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) 
               label="Especialidad:"
               placeholder="Selecciona una especialidad"
               options={specialties.map(s => ({ value: s.id.toString(), label: s.name }))} 
-              className="flex-1 grow shrink-0 basis-0 w-fit"
+              className="flex-1"
               name="specialty_id"
-              value={formData.specialty_id}
+              value={formData.specialty_id} 
               onChange={handleChange}
             />
           </div>
@@ -134,12 +123,12 @@ export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) 
             onChange={handleChange}
           />
 
-          <div className="flex flex-wrap gap-10 mt-6 whitespace-nowrap max-md:max-w-full">
+          <div className="flex flex-wrap gap-10 mt-6">
             <ServiceFormField
               label="Duración (min):"
               placeholder="Ej: 60"
               type="number"
-              className="flex-1 grow shrink-0 basis-0 w-fit"
+              className="flex-1"
               name="minutes_duration"
               value={formData.minutes_duration}
               onChange={handleChange}
@@ -148,31 +137,30 @@ export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) 
               label="Precio ($):"
               placeholder="Ej: 50.00"
               type="number"
-              className="flex-1 grow shrink-0 basis-0 w-fit"
+              className="flex-1"
               name="price"
               value={formData.price}
               onChange={handleChange}
             />
           </div>
+
           <ServiceFormField
             label="Estado:"
             placeholder="Selecciona un estado"
             options={statusOptions}
-            className="flex-1 grow shrink-0 basis-0 w-fit"
+            className="flex-1"
             name="status"
             value={formData.status}
             onChange={handleChange}
           />
 
-          {/* Botón */}
           <button
             onClick={handleAddService}
             type="button"
-            className="flex flex-col justify-center self-center px-11 py-5 mt-10 max-w-full text-base font-bold text-center text-white whitespace-nowrap bg-yellow-700/60 rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] w-[149px] max-md:px-5 hover:bg-yellow-700/80 transition-colors duration-200"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
+            className="self-center px-11 py-5 mt-10 text-base font-bold text-white bg-yellow-700/60 rounded-[40px] hover:bg-yellow-700/80 transition-colors"
             disabled={loading}
           >
-            <span>{loading ? 'Agregando...' : 'Agregar'}</span>
+            {loading ? 'Agregando...' : 'Agregar'}
           </button>
         </form>
       </div>

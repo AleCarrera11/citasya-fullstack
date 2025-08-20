@@ -26,11 +26,23 @@ export class ServicesService {
     }
 
     /**
+     * Obtiene servicios filtrados por ID de especialidad.
+     * @param specialtyId El ID de la especialidad.
+     */
+    async findBySpecialtyId(specialtyId: number): Promise<Service[]> {
+        return this.serviceRepository.find({
+            where: { specialty: { id: specialtyId } },
+            relations: ["specialty"],
+            order: { name: "ASC" }
+        });
+    }
+
+    /**
      * Crea un nuevo servicio.
      * @param serviceData Los datos del servicio a crear.
      */
-    async create(serviceData: { name: string, specialtie_id: number, description: string, minutes_duration: number, price: number, status: string }): Promise<Service | null> {
-        const specialty = await this.specialtyRepository.findOneBy({ id: serviceData.specialtie_id });
+    async create(serviceData: { name: string, specialty_id: number, description: string, minutes_duration: number, price: number, status: string }): Promise<Service | null> {
+        const specialty = await this.specialtyRepository.findOneBy({ id: serviceData.specialty_id });
         if (!specialty) {
             return null; // Retorna null si la especialidad no existe
         }
@@ -60,13 +72,13 @@ export class ServicesService {
      * @param id El ID del servicio a actualizar.
      * @param serviceData Los datos actualizados.
      */
-    async update(id: number, serviceData: { name: string, specialtie_id: number, description: string, minutes_duration: number, price: number, status: string }): Promise<Service | null> {
+    async update(id: number, serviceData: { name: string, specialty_id: number, description: string, minutes_duration: number, price: number, status: string }): Promise<Service | null> {
         const serviceToUpdate = await this.serviceRepository.findOneBy({ id });
         if (!serviceToUpdate) {
             return null;
         }
 
-        const specialty = await this.specialtyRepository.findOneBy({ id: serviceData.specialtie_id });
+        const specialty = await this.specialtyRepository.findOneBy({ id: serviceData.specialty_id });
         if (!specialty) {
             return null;
         }

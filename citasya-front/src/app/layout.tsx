@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
-import {Header} from "../components/Header";
+import { Header } from "../components/Header";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -29,7 +29,9 @@ export default function RootLayout({
     <html lang="es" className={`${poppins.variable} ${roboto_condensed.variable}`}>
       <body className="bg-neutral-100">
         <Header />
-        {children}
+        <div className="pt-8">
+          {children}
+        </div>
       </body>
     </html>
   );

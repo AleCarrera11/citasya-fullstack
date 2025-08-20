@@ -25,9 +25,7 @@ interface EditServiceProps {
   specialties: SpecialtyData[];
 }
 
-// Se renombra el componente y sus props
 export const EditService: React.FC<EditServiceProps> = ({ onClose, serviceData, specialties }) => {
-  // Estado del formulario, inicializado con los datos del servicio
   const [formData, setFormData] = useState({
     id: serviceData.id,
     name: serviceData.name || '',
@@ -49,7 +47,7 @@ export const EditService: React.FC<EditServiceProps> = ({ onClose, serviceData, 
   ) => {
     const { name, value } = e.target;
     if (!name) return;
-    setFormData(prev => ({ ...prev, [name]: typeof value === 'string' ? value : value[0] }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleEditService = async () => {
@@ -58,32 +56,27 @@ export const EditService: React.FC<EditServiceProps> = ({ onClose, serviceData, 
     try {
       const payload = {
         ...formData,
-        minutes_duration: parseInt(formData.minutes_duration),
+        specialty_id: parseInt(formData.specialty_id, 10), 
+        minutes_duration: parseInt(formData.minutes_duration, 10),
         price: parseFloat(formData.price),
-        specialty_id: parseInt(formData.specialty_id)
       };
 
       const response = await fetch(`${API_URL}/services/${formData.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        throw new Error('Error al editar el servicio');
-      }
+      if (!response.ok) throw new Error('Error al editar el servicio');
 
       await response.json();
-      onClose(); 
+      onClose();
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
         console.error('Failed to edit service:', err);
       } else {
         setError('Error desconocido al editar el servicio');
-        console.error('Failed to edit service:', err);
       }
     } finally {
       setLoading(false);
@@ -97,29 +90,26 @@ export const EditService: React.FC<EditServiceProps> = ({ onClose, serviceData, 
 
   return (
     <main className="max-w-[679px]">
-      <div className="flex flex-col py-9 w-full bg-neutral-100 rounded-[30px] shadow-lg max-md:max-w-full">
-        {/* Sección de Header */}
-        <header className="flex flex-col self-end mr-11 max-w-full text-4xl font-bold leading-none text-center text-stone-400 w-[404px] max-md:mr-2.5">
+      <div className="flex flex-col py-9 w-full bg-neutral-100 rounded-[30px] shadow-lg">
+        <header className="flex flex-col self-end mr-11 text-4xl font-bold leading-none text-center text-stone-400 w-[404px]">
           <button
             onClick={onClose}
             aria-label="Cerrar modal"
-            className="self-end object-contain w-[25px] h-[25px] cursor-pointer"
+            className="self-end w-[25px] h-[25px] cursor-pointer"
           >
-            <VscChromeClose className="text-neutral-600 hover:text-neutral-800 transition-colors duration-200" />
+            <VscChromeClose className="text-neutral-600 hover:text-neutral-800 transition-colors" />
           </button>
-          <h1 className="self-center text-yellow-700/60" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
-            Editar Servicio
-          </h1>
+          <h1 className="self-center text-yellow-700/60">Editar Servicio</h1>
         </header>
 
-        {/* Sección de formulario */}
-        <form className="flex flex-col px-10 mt-8 w-full text-neutral-600 max-md:px-5 max-md:max-w-full">
+        <form className="flex flex-col px-10 mt-8 w-full text-neutral-600">
           {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-          <div className="flex flex-wrap gap-10 max-md:max-w-full">
+
+          <div className="flex flex-wrap gap-10">
             <ServiceFormField
               label="Nombre del servicio:"
               placeholder="Ingresa nombre..."
-              className="flex-1 grow shrink-0 basis-0 w-fit"
+              className="flex-1"
               name="name"
               value={formData.name}
               onChange={handleChange}
@@ -127,10 +117,10 @@ export const EditService: React.FC<EditServiceProps> = ({ onClose, serviceData, 
             <ServiceFormField
               label="Especialidad:"
               placeholder="Selecciona una especialidad"
-              options={specialties.map(s => ({ value: s.id.toString(), label: s.name }))}
-              className="flex-1 grow shrink-0 basis-0 w-fit"
+              options={specialties.map(s => ({ value: s.id.toString(), label: s.name }))} 
+              className="flex-1"
               name="specialty_id"
-              value={formData.specialty_id}
+              value={formData.specialty_id} 
               onChange={handleChange}
             />
           </div>
@@ -145,12 +135,12 @@ export const EditService: React.FC<EditServiceProps> = ({ onClose, serviceData, 
             onChange={handleChange}
           />
 
-          <div className="flex flex-wrap gap-10 mt-6 whitespace-nowrap max-md:max-w-full">
+          <div className="flex flex-wrap gap-10 mt-6">
             <ServiceFormField
               label="Duración (min):"
               placeholder="Ej: 60"
               type="number"
-              className="flex-1 grow shrink-0 basis-0 w-fit"
+              className="flex-1"
               name="minutes_duration"
               value={formData.minutes_duration}
               onChange={handleChange}
@@ -159,34 +149,32 @@ export const EditService: React.FC<EditServiceProps> = ({ onClose, serviceData, 
               label="Precio ($):"
               placeholder="Ej: 50.00"
               type="number"
-              className="flex-1 grow shrink-0 basis-0 w-fit"
+              className="flex-1"
               name="price"
               value={formData.price}
               onChange={handleChange}
             />
           </div>
-          <div className="flex flex-wrap gap-10 mt-6 whitespace-nowrap max-md:max-w-full">
+
+          <div className="flex flex-wrap gap-10 mt-6">
             <ServiceFormField
               label="Estado:"
               placeholder="Selecciona un estado"
               options={statusOptions}
-              className="flex-1 grow shrink-0 basis-0 w-fit"
+              className="flex-1"
               name="status"
               value={formData.status}
               onChange={handleChange}
             />
           </div>
 
-
-          {/* Botón de editar */}
           <button
             onClick={handleEditService}
             type="button"
-            className="flex flex-col justify-center self-center px-11 py-5 mt-10 max-w-full text-base font-bold text-center text-white whitespace-nowrap bg-yellow-700/60 rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] w-[149px] max-md:px-5 hover:bg-yellow-700/80 transition-colors duration-200"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
+            className="self-center px-11 py-5 mt-10 text-base font-bold text-white bg-yellow-700/60 rounded-[40px] hover:bg-yellow-700/80 transition-colors"
             disabled={loading}
           >
-            <span>{loading ? 'Guardando...' : 'Guardar'}</span>
+            {loading ? 'Guardando...' : 'Guardar'}
           </button>
         </form>
       </div>

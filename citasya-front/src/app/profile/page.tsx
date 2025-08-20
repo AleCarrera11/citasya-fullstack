@@ -141,9 +141,9 @@ function Perfil() {
   
 
   return (
-    <div className="flex flex-col items-center pb-72 bg-neutral-100 max-md:pb-24">
+    <div className="relative w-full min-h-screen bg-neutral-100 flex flex-col items-center pb-72 max-md:pb-24">
       <main className="flex flex-col items-center w-full max-w-5xl px-5">
-        <h1 className="mt-12 text-4xl font-medium text-yellow-700/60 max-md:mt-10 max-md:text-3xl" style={{ fontFamily: "Roboto Condensed, sans-serif" }}>
+        <h1 className="mt-8 text-4xl font-medium text-yellow-700/60 max-md:mt-10 max-md:text-3xl" style={{ fontFamily: "Roboto Condensed, sans-serif" }}>
           Configuración del centro
         </h1>
         <CenterDataForm />

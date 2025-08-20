@@ -148,7 +148,7 @@ const Citas: React.FC = () => {
   return (
     <div className="z-0 relative w-full min-h-screen bg-neutral-100">
       <main className="container pl-30 pr-30 mx-auto max-md:px-5 max-sm:px-2.5">
-        <h1 className="mx-0 mt-20 mb-5 text-4xl font-medium text-center text-yellow-700/60 max-sm:mx-0 max-sm:my-8 max-sm:text-3xl" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
+        <h1 className="mx-0 mt-8 mb-5 text-4xl font-medium text-center text-yellow-700/60 max-sm:mx-0 max-sm:my-8 max-sm:text-3xl" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
           Gestión de Citas
         </h1>
 

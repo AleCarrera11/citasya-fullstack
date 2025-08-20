@@ -1,31 +1,35 @@
 'use client';
 
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import Select from 'react-select';
 
-interface SelectOption {
-  value: string;
+// La interfaz ahora es genérica para manejar valores de cualquier tipo (T)
+export interface SelectOption<T> {
+  value: T;
   label: string;
 }
 
-interface ServiceFormFieldProps {
+// Las props del componente también son genéricas
+interface ServiceFormFieldProps<T extends string | number> {
   label: string;
   placeholder?: string;
   type?: string;
   className?: string;
-  options?: SelectOption[];
+  options?: SelectOption<T>[];
   multiple?: boolean;
   name?: string;
-  value: string | string[];
+  value: T | T[] | ''; // ' ' se incluye para el placeholder de select
   onChange?: (
-    e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
-    | { target: { name?: string; value: string | string[] } }
+    e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
+    | { target: { name?: string; value: T | T[] } }
   ) => void;
   readOnly?: boolean;
   whiteBg?: boolean;
+  disabled?: boolean;
 }
 
-export const ServiceFormField: React.FC<ServiceFormFieldProps> = ({
+// El componente se define con el tipo genérico
+export const ServiceFormField = <T extends string | number>({
   label,
   placeholder,
   type = 'text',
@@ -37,14 +41,27 @@ export const ServiceFormField: React.FC<ServiceFormFieldProps> = ({
   onChange,
   readOnly = false,
   whiteBg = false,
-}) => {
-  // Clase condicional para el fondo. Si whiteBg es true, usa bg-white; de lo contrario, usa el color original.
+  disabled = false,
+}: ServiceFormFieldProps<T>) => {
   const bgColorClass = whiteBg ? 'bg-white' : 'bg-green-200/40';
 
+  // Manejador de cambio para react-select
+  const handleSelectChange = (
+    selected: SelectOption<T> | readonly SelectOption<T>[] | null,
+  ) => {
+    if (!onChange) return;
+
+    if (multiple) {
+      const selectedValues = (selected as readonly SelectOption<T>[]).map(opt => opt.value);
+      onChange({ target: { name, value: selectedValues } });
+    } else {
+      const selectedValue = (selected as SelectOption<T>).value;
+      onChange({ target: { name, value: selectedValue } });
+    }
+  };
+
   if (readOnly) {
-    // Solo mostrar texto en un div que imite estilo
     if (options) {
-      // Para selects mostrar etiquetas de las opciones seleccionadas
       const displayValues = multiple && Array.isArray(value)
         ? options.filter(opt => value.includes(opt.value)).map(opt => opt.label).join(', ')
         : options.find(opt => opt.value === value)?.label || '';
@@ -58,16 +75,16 @@ export const ServiceFormField: React.FC<ServiceFormFieldProps> = ({
         </div>
       );
     }
-    // Para input o textarea solo mostrar texto
     return (
       <div className={`flex flex-col mt-4 ${className}`}>
         <label className="text-base font-bold text-neutral-600">{label}</label>
         <div className="px-5 pt-2 pb-4 mt-2 text-sm bg-white rounded-lg w-full max-md:pr-5 whitespace-pre-wrap">
-          {value || '-'}
+          {String(value) || '-'}
         </div>
       </div>
     );
   }
+
   return (
     <div className={`flex flex-col mt-4 ${className}`}>
       <label className="text-base font-bold text-neutral-600">
@@ -81,17 +98,12 @@ export const ServiceFormField: React.FC<ServiceFormFieldProps> = ({
             options={options}
             placeholder={placeholder}
             value={options.filter(opt => Array.isArray(value) && value.includes(opt.value))}
-            onChange={(selected) => {
-              const selectedValues = (selected as SelectOption[]).map(opt => opt.value);
-              if (onChange) {
-                onChange({ target: { name, value: selectedValues } });
-              }
-            }}
+            onChange={handleSelectChange}
             classNamePrefix="custom-select"
+            isDisabled={disabled}
             styles={{
               control: (base) => ({
                 ...base,
-                // Corrección del error tipográfico y uso de la prop whiteBg
                 backgroundColor: whiteBg ? 'white' : 'rgba(187, 247, 208, 0.4)',
                 borderRadius: '0.5rem',
                 padding: '2px',
@@ -132,18 +144,18 @@ export const ServiceFormField: React.FC<ServiceFormFieldProps> = ({
           />
         ) : (
           <select
-            // Se usa la clase condicional para el color de fondo
             className={`rounded-lg ${bgColorClass} p-3 mt-2 text-sm text-neutral-600
-                         focus:outline-none focus:ring-2 focus:ring-yellow-700/60 transition-all duration-200`}
-            value={value as string}
-            onChange={onChange}
+              focus:outline-none focus:ring-2 focus:ring-yellow-700/60 transition-all duration-200`}
+            value={String(value)} // Convierte el valor a string para el HTML select
+            onChange={onChange as (e: ChangeEvent<HTMLSelectElement>) => void}
             name={name}
+            disabled={disabled}
           >
             <option value="" disabled>
               {placeholder}
             </option>
             {options.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option key={String(option.value)} value={String(option.value)}>
                 {option.label}
               </option>
             ))}
@@ -151,25 +163,25 @@ export const ServiceFormField: React.FC<ServiceFormFieldProps> = ({
         )
       ) : type === 'textarea' ? (
         <textarea
-          // Se usa la clase condicional para el color de fondo
           className={`rounded-lg ${bgColorClass} p-3 mt-2 text-sm text-neutral-600
-                       focus:outline-none focus:ring-2 focus:ring-yellow-700/60 transition-all duration-200`}
+            focus:outline-none focus:ring-2 focus:ring-yellow-700/60 transition-all duration-200`}
           placeholder={placeholder}
           rows={4}
           value={value as string}
-          onChange={onChange}
+          onChange={onChange as (e: ChangeEvent<HTMLTextAreaElement>) => void}
           name={name}
+          disabled={disabled}
         />
       ) : (
         <input
           type={type}
-          // Se usa la clase condicional para el color de fondo
           className={`rounded-lg ${bgColorClass} p-3 mt-2 text-sm text-neutral-600
-                       focus:outline-none focus:ring-2 focus:ring-yellow-700/60 transition-all duration-200`}
+            focus:outline-none focus:ring-2 focus:ring-yellow-700/60 transition-all duration-200`}
           placeholder={placeholder}
           value={value as string}
-          onChange={onChange}
+          onChange={onChange as (e: ChangeEvent<HTMLInputElement>) => void}
           name={name}
+          disabled={disabled}
         />
       )}
     </div>

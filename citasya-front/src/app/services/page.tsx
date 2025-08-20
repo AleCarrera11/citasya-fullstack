@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ServiceGrid } from '../../components/services/ServiceGrid';
 import { NewService } from '../../components/services/NewService';
 import { EditService } from '../../components/services/EditService';
@@ -51,7 +51,7 @@ const Servicios: React.FC = () => {
   const [loadingServices, setLoadingServices] = useState(true);
   const [servicesError, setServicesError] = useState<string | null>(null);
 
-  const API_URL = 'http://localhost:4000/admin';
+  const API_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/admin`;
 
   // Opciones de estado estáticas con "Todos"
   const statusOptions = ['Todos', 'Activo', 'Inactivo'];
@@ -195,7 +195,7 @@ const Servicios: React.FC = () => {
     handleOpenDeleteModal(id);
   };
 
-  const fetchSpecialties = async () => {
+  const fetchSpecialties = useCallback(async () => {
     setLoadingSpecialties(true);
     setSpecialtiesError(null);
     try {
@@ -214,9 +214,9 @@ const Servicios: React.FC = () => {
     } finally {
       setLoadingSpecialties(false);
     }
-  };
+  }, [API_URL]);
 
-  const fetchServices = async () => {
+  const fetchServices = useCallback(async () => {
     setLoadingServices(true);
     setServicesError(null);
     try {
@@ -235,13 +235,13 @@ const Servicios: React.FC = () => {
     } finally {
       setLoadingServices(false);
     }
-  };
+  }, [API_URL]);
 
   // Cargar las especialidades y servicios al montar el componente
   useEffect(() => {
     fetchSpecialties();
     fetchServices();
-  }, []);
+  }, [fetchServices, fetchSpecialties]);
 
   // Construir las opciones del selector de especialidad, incluyendo la opción de administrar
   const specialtySelectOptions = [
@@ -261,7 +261,7 @@ const Servicios: React.FC = () => {
   return (
     <div className="relative w-full min-h-screen bg-neutral-100">
       <main>
-        <h1 className="mx-0 mt-14 mb-14 text-4xl font-medium text-center text-yellow-700/60 max-sm:mx-0 max-sm:my-8 max-sm:text-3xl" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
+        <h1 className="mx-0 mt-8 mb-14 text-4xl font-medium text-center text-yellow-700/60 max-sm:mx-0 max-sm:my-8 max-sm:text-3xl" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
           Servicios
         </h1>
 

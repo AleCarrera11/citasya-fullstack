@@ -5,6 +5,7 @@ const router = Router();
 const servicesController = new ServicesController();
 
 router.get('/', servicesController.getAllServices);
+router.get('/specialty/:specialtyId', servicesController.getServicesBySpecialtyId);
 router.post('/', servicesController.createService);
 router.put('/:id', servicesController.updateService);
 router.delete('/:id', servicesController.deleteService);
