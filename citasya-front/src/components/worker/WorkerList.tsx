@@ -20,10 +20,9 @@ type Specialist = {
   phone: string;
   documentId: string;
   email: string;
-  services: string[];
+  services: { id: number; name: string }[];
 };
 
-// Esta es la estructura que viene del backend
 interface BackendSpecialist {
   id: number;
   name: string;
@@ -65,24 +64,28 @@ function SpecialistCard({
 }
 
 export function SpecialistList() {
-  const [specialists, setSpecialists] = React.useState<Specialist[]>([]);
+const [specialists, setSpecialists] = React.useState<Specialist[]>([]);
+  const [allServices, setAllServices] = React.useState<{ id: number; name: string }[]>([]); 
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [showNewSpecialistModal, setShowNewSpecialistModal] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedSpecialistId, setSelectedSpecialistId] = React.useState<number | null>(null);
+  const [forceReload, setForceReload] = React.useState(0);
 
   React.useEffect(() => {
-    async function fetchSpecialists() {
+    async function fetchData() {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/workers`
-        );
-        if (!res.ok) throw new Error("Error al obtener especialistas");
-        const data: BackendSpecialist[] = await res.json();
-        
-        // Mapeamos los datos del backend a la estructura del frontend
-        const formattedData: Specialist[] = data.map((spec) => {
+        const specialistsRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/workers`);
+        if (!specialistsRes.ok) throw new Error("Error al obtener especialistas");
+        const specialistsData: BackendSpecialist[] = await specialistsRes.json();
+
+        const servicesRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/services`); 
+        if (!servicesRes.ok) throw new Error("Error al obtener servicios");
+        const servicesData = await servicesRes.json();
+        setAllServices(servicesData.map((s: Service) => ({ id: s.id, name: s.name }))); 
+
+        const formattedData: Specialist[] = specialistsData.map((spec) => {
           const uniqueSpecialties = Array.from(
             new Set(spec.services.map((service) => service.specialty.name))
           );
@@ -94,7 +97,7 @@ export function SpecialistList() {
             phone: spec.phone,
             documentId: spec.documentId,
             email: spec.email,
-            services: spec.services.map((service) => service.name),
+            services: spec.services.map((service) => ({ id: service.id, name: service.name })), 
           };
         });
         
@@ -109,8 +112,8 @@ export function SpecialistList() {
         setLoading(false);
       }
     }
-    fetchSpecialists();
-  }, []);
+    fetchData();
+  }, [forceReload]);
 
   const filteredSpecialists = specialists.filter((spec) =>
     spec.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -119,7 +122,9 @@ export function SpecialistList() {
   const selectedSpecialist = specialists.find(
     (spec) => spec.id === selectedSpecialistId
   );
-
+    const handleWorkerUpdated = () => {
+    setForceReload(prev => prev + 1);
+  };
   if (loading) return <p>Cargando especialistas...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -168,7 +173,11 @@ export function SpecialistList() {
       </aside>
 
       <section className="ml-5 w-[64%] max-md:ml-0 max-md:w-full">
-        <SpecialistProfile specialist={selectedSpecialist || null} />
+        <SpecialistProfile 
+          specialist={selectedSpecialist || null} 
+          onWorkerUpdated={handleWorkerUpdated}
+          allServices={allServices} 
+        />
       </section>
     </div>
   );

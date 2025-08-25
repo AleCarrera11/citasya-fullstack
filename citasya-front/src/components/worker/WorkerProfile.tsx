@@ -2,28 +2,28 @@ import * as React from "react";
 import { Calendar } from "./Calendar";
 import { ServiceFormField } from "../InputField";
 import { DeleteSpecialist } from "./DeleteWorker";
+import { EditWorker } from "./EditWorker";
+import { VscEdit } from "react-icons/vsc";
 
-interface SpecialistProfileProps {
-  specialist: {
-    name: string;
-    phone: string;
-    specialties: string[];
-    documentId: string;
-    email: string;
-    services: string[];
-  } | null;
+export interface Specialist {
+  id: number;
+  name: string;
+  specialties: string[];
+  phone: string;
+  documentId: string;
+  email: string;
+  services: { id: number; name: string }[]; 
 }
 
-export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
+interface SpecialistProfileProps {
+  specialist: Specialist | null;
+  onWorkerUpdated: () => void;
+  allServices: { id: number; name: string }[]; 
+}
+
+export function SpecialistProfile({ specialist, onWorkerUpdated, allServices }: SpecialistProfileProps) {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-
-  const [selectedServices, setSelectedServices] = React.useState<string[]>(specialist?.services ?? []);
-
-  React.useEffect(() => {
-    if (specialist) {
-      setSelectedServices(specialist.services);
-    }
-  }, [specialist]);
+  const [showEditModal, setShowEditModal] = React.useState(false);
 
   if (!specialist) {
     return (
@@ -35,32 +35,25 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
     );
   }
   
-  const formattedServices = selectedServices.map(serviceName => ({
-      value: serviceName,
-      label: serviceName,
-  }));
+  const serviceNames = specialist.services.map(s => s.name).join(", "); 
+  const handleDeleteWorker = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/workers/${specialist.id}`, {
+        method: "DELETE",
+      });
 
-  const handleServicesChange = (
-    e:
-      | React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
-      | { target: { name?: string; value: string | string[] } }
-  ) => {
-    if ("target" in e && "selectedOptions" in e.target) {
-      // HTMLSelectElement event
-      const selectedOptions = Array.from(
-        (e.target as HTMLSelectElement).selectedOptions,
-        (option) => option.value
-      );
-      setSelectedServices(selectedOptions);
-    } else if ("target" in e && Array.isArray(e.target.value)) {
-      // Custom event with array value
-      setSelectedServices(e.target.value as string[]);
-    } else if ("target" in e) {
-      // Fallback for string value
-      setSelectedServices([e.target.value as string]);
+      if (!res.ok) {
+        throw new Error("Error al eliminar especialista");
+      }
+
+      onWorkerUpdated(); 
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo eliminar el especialista");
     }
   };
-  
+
   return (
     <section className="ml-5 w-full h-full ">
       <div className="px-12 py-14 mx-auto w-full rounded-3xl bg-green-200/40 max-md:px-5 max-md:mt-7 max-md:max-w-full">
@@ -75,6 +68,7 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
             <h3 className="basis-auto rotate-[7.710460847772601e-17rad]">
               Datos del especialista
             </h3>
+            <VscEdit onClick={() => setShowEditModal(true)} size={24} className="text-yellow-700/60 cursor-pointer hover:text-stone-500 transition-colors" />
           </div>
           <div className="flex gap-5 max-md:flex-col max-md:">
             <div className="w-6/12 max-md:ml-0 max-md:w-full">
@@ -88,12 +82,6 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
                 <ServiceFormField
                   label="Teléfono"
                   value={specialist.phone}
-                  readOnly
-                  className="w-full"
-                />
-                <ServiceFormField
-                  label="Especialidades"
-                  value={specialist.specialties.join(", ")}
                   readOnly
                   className="w-full"
                 />
@@ -118,14 +106,19 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-10 max-md:max-w-full">
+        <div className="flex flex-wrap gap-2 max-md:max-w-full">
+          <ServiceFormField
+            label="Especialidades:"
+            value={specialist.specialties.join(", ")}
+            readOnly
+            placeholder="No hay especialidades asignadas"
+            className="w-full max-md:w-full"
+          />
           <ServiceFormField
             label="Servicios asignados:"
-            options={formattedServices}
-            multiple
-            value={selectedServices}
-            onChange={handleServicesChange}
-            placeholder="Selecciona servicios"
+            value={serviceNames}
+            readOnly
+            placeholder="No hay servicios asignados"
             whiteBg={true}
             className="w-full max-md:w-full"
           />
@@ -147,13 +140,25 @@ export function SpecialistProfile({ specialist }: SpecialistProfileProps) {
           </button>
         </div>
       </div>
+      {showEditModal && specialist && (
+        <EditWorker
+          onClose={() => setShowEditModal(false)}
+          specialistData={{
+            id: String(specialist.id),
+            name: specialist.name,
+            phone: specialist.phone,
+            services: specialist.services, 
+            cedula: specialist.documentId,
+            email: specialist.email,
+          }}
+          allServices={allServices}
+          onSaveSuccess={onWorkerUpdated}
+        />
+      )}
       {showDeleteModal && (
         <DeleteSpecialist
           onClose={() => setShowDeleteModal(false)}
-          onConfirm={() => {
-            // Lógica de borrado
-            setShowDeleteModal(false);
-          }}
+          onConfirm={handleDeleteWorker}
         />
       )}
     </section>

@@ -19,11 +19,7 @@ export const NuevoCliente: React.FC<NuevoClienteProps> = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   * Maneja los cambios en los campos del formulario.
-   * La función ahora acepta el tipo 'string | string[]' y se asegura de que
-   * el valor guardado en el estado sea siempre un string.
-   */
+
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -31,8 +27,6 @@ export const NuevoCliente: React.FC<NuevoClienteProps> = ({ onClose }) => {
   ) => {
     const { name, value } = e.target;
     if (!name) return;
-    // Comprobamos si el valor es un array y tomamos el primer elemento si lo es.
-    // De lo contrario, usamos el valor directamente.
     const newValue = typeof value === 'string' ? value : value[0];
     setFormData(prev => ({ ...prev, [name]: newValue }));
   };
@@ -41,17 +35,16 @@ export const NuevoCliente: React.FC<NuevoClienteProps> = ({ onClose }) => {
     setLoading(true);
     setError(null);
 
-    // Mapeo de los datos del frontend a los nombres de las columnas del backend (clients.model.ts)
     const clientData = {
       name: formData.nombre,
       documentId: formData.cedula,
       phone: formData.telefono,
-      notes: formData.nota, // Aseguramos que el nombre de la variable coincida con el backend
+      notes: formData.nota, 
     };
 
     try {
       // Realiza la petición POST a tu API
-      const response = await fetch('http://localhost:3000/admin/clients', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/clients`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,10 +55,6 @@ export const NuevoCliente: React.FC<NuevoClienteProps> = ({ onClose }) => {
       if (!response.ok) {
         throw new Error('Error al crear el cliente. Por favor, intenta de nuevo.');
       }
-
-      // Si la petición es exitosa, cierra el modal.
-      // La función 'onClose' en el componente padre (ClientDirectory)
-      // se encargará de recargar la lista de clientes.
       onClose();
 
     } catch (e: unknown) {
@@ -81,7 +70,6 @@ export const NuevoCliente: React.FC<NuevoClienteProps> = ({ onClose }) => {
     <main className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
       <div className="max-w-xl w-full mx-4 sm:mx-6 md:mx-auto">
         <div className="flex flex-col py-9 px-6 sm:px-10 md:px-12 w-full bg-neutral-100 rounded-[30px] shadow-2xl">
-          {/* Header */}
           <header className="flex justify-between items-center w-full">
             <div className="flex-1"></div>
             <h1 className="text-4xl font-bold leading-none text-center text-yellow-700/60" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
@@ -96,9 +84,7 @@ export const NuevoCliente: React.FC<NuevoClienteProps> = ({ onClose }) => {
             </button>
           </header>
 
-          {/* Form */}
           <form className="flex flex-col mt-8 w-full text-neutral-600" onSubmit={(e) => { e.preventDefault(); handleAddClient(); }}>
-            {/* Fila 1 */}
             <div className="flex flex-wrap gap-10 max-md:flex-col">
               <ServiceFormField
                 label="Nombre del cliente:"
@@ -120,7 +106,6 @@ export const NuevoCliente: React.FC<NuevoClienteProps> = ({ onClose }) => {
               />
             </div>
 
-            {/* Fila 2 */}
             <div className="flex flex-wrap gap-10 mt-6 max-md:flex-col">
               <ServiceFormField
                 label="Teléfono:"
@@ -133,7 +118,6 @@ export const NuevoCliente: React.FC<NuevoClienteProps> = ({ onClose }) => {
               />
             </div>
             
-            {/* Fila 3 - TextArea */}
             <ServiceFormField
               label="Nota:"
               placeholder="Escribe una nota para el cliente..."
@@ -146,7 +130,6 @@ export const NuevoCliente: React.FC<NuevoClienteProps> = ({ onClose }) => {
 
             {error && <p className="text-red-500 text-sm mt-4 text-center">{error}</p>}
 
-            {/* Botón */}
             <button
               type="submit"
               className="flex justify-center self-center px-11 py-5 mt-10 max-w-full text-base font-bold text-center text-white whitespace-nowrap bg-yellow-700/60 rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] w-[149px] max-md:px-5 hover:bg-yellow-700/80 transition-colors duration-200"

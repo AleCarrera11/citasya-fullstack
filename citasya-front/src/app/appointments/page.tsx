@@ -4,9 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ServiceFormField } from '../../components/InputField';
 import { AppointmentsTable } from '../../components/appointments/AppointmentsTable';
 import { VscAdd } from "react-icons/vsc";
-import NewAppointment from '../../components/appointments/NewAppointment';
+import { NewAppointment } from '../../components/appointments/NewAppointment';
 
-// Interfaces para los datos que ahora esperamos del backend
 interface Client {
   name: string;
 }
@@ -26,7 +25,6 @@ enum AppointmentStatus {
   Concluida = "Concluida"
 }
 
-// Interfaz que coincide con la respuesta del backend (con relaciones)
 interface Appointment {
   id: number;
   date: string;
@@ -37,31 +35,17 @@ interface Appointment {
   service: Service;
 }
 
-// Interfaz para la data de la cita que se pasa a la tabla
-// Se ha unificado el nombre de la propiedad 'professional' para ser consistente con la tabla.
-interface AppointmentDataForTable {
-    id: string;
-    status: string;
-    service: string;
-    date: string;
-    clientName: string;
-    time: string;
-    professional: string; // Se cambió 'especialista' a 'professional'
-}
 
-const Citas: React.FC = () => {
+const Appointments: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedEspecialista, setSelectedEspecialista] = useState('');
   const [selectedService, setSelectedService] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [showNewModal, setShowNewModal] = useState(false);
-  
-
-  // Solo necesitamos el estado para las citas del backend
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+  const [workersForFilter, setWorkersForFilter] = useState<{ label: string; value: string; }[]>([]);
   const [servicesForFilter, setServicesForFilter] = useState<{ label: string; value: string; }[]>([]);
 
   const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -74,14 +58,34 @@ const Citas: React.FC = () => {
     { label: 'Concluida', value: AppointmentStatus.Concluida },
   ];
 
-  const especialistaOptions = [
-    { label: 'Todos', value: '' },
-    { label: 'Maria Perez', value: 'Maria Perez' },
-    { label: 'Juan Lopez', value: 'Juan Lopez' },
-    { label: 'Ana Garcia', value: 'Ana Garcia' }
-  ];
+  // Función para traer especialistas desde la base de datos
+  const fetchWorkers = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE}/admin/workers`);
+      if (!res.ok) throw new Error(`Error fetching workers: ${res.statusText}`);
+      const workersData: Worker[] = await res.json();
+      const workerOptions = [{ label: 'Todos', value: '' }, ...workersData.map(w => ({ label: w.name, value: w.name }))];
+      setWorkersForFilter(workerOptions);
+    } catch (err) {
+      console.error('Error fetching workers:', err);
+    }
+  }, [API_BASE]);
 
-  // La función de obtención de datos ahora solo se enfoca en las citas del backend
+  // Función para traer servicios desde la base de datos
+  const fetchServices = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_BASE}/admin/services`);
+      if (!res.ok) throw new Error(`Error fetching services: ${res.statusText}`);
+      const servicesData: Service[] = await res.json();
+      const serviceOptions = [{ label: 'Todos', value: '' }, ...servicesData.map(s => ({ label: s.name, value: s.name }))];
+      setServicesForFilter(serviceOptions);
+    } catch (err) {
+      console.error('Error fetching services:', err);
+    }
+  }, [API_BASE]);
+
+
+  // La función de obtención de datos
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -96,9 +100,9 @@ const Citas: React.FC = () => {
       setAppointments(appointmentsData);
       
       // Procesar los servicios únicos para el filtro
-      const uniqueServices = Array.from(new Set(appointmentsData.map((a: Appointment) => String(a.service.name))));
-      const newServiceOptions = [{ label: 'Todos', value: '' }, ...uniqueServices.map(service => ({ label: String(service), value: String(service) }))];
-      setServicesForFilter(newServiceOptions);
+      //const uniqueServices = Array.from(new Set(appointmentsData.map((a: Appointment) => String(a.service.name))));
+      //const newServiceOptions = [{ label: 'Todos', value: '' }, ...uniqueServices.map(service => ({ label: String(service), value: String(service) }))];
+      //setServicesForFilter(newServiceOptions);
 
     } catch (err: unknown) {
       console.error('Error fetching data:', err);
@@ -114,7 +118,10 @@ const Citas: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchWorkers();
+    fetchServices();
+  }, [fetchData, fetchWorkers, fetchServices]);
+
 
   // Lógica de filtrado de citas
   const filteredAppointments = appointments.filter(appointment => {
@@ -135,13 +142,28 @@ const Citas: React.FC = () => {
     setShowNewModal(false); 
   };
 
-  const handleMoreInfo = (appointment: AppointmentDataForTable) => {
-    console.log(`Ver más información de la cita con ID: ${appointment.id}`);
+  const handleUpdateStatus = async (appointmentId: string, newStatus: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/admin/appointments/${appointmentId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!res.ok) throw new Error('Error actualizando estado');
+
+      const updatedAppointment = await res.json();
+
+      // Actualizar el estado local para reflejar el cambio en la tabla
+      setAppointments(prev =>
+        prev.map(a => (a.id === updatedAppointment.id ? updatedAppointment : a))
+      );
+
+    } catch (error) {
+      console.error('Error actualizando estado:', error);
+    }
   };
 
-  const handleCancelAppointment = (appointment: AppointmentDataForTable) => {
-    console.log(`Cancelando la cita con ID: ${appointment.id}`);
-  };
 
   const googleCalendarEmbedUrl = process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_URL;
 
@@ -200,7 +222,7 @@ const Citas: React.FC = () => {
               <ServiceFormField
                 label="Especialista:"
                 placeholder="Selecciona un especialista"
-                options={especialistaOptions}
+                options={workersForFilter} 
                 value={selectedEspecialista}
                 onChange={(e) => setSelectedEspecialista(Array.isArray(e.target.value) ? e.target.value[0] : e.target.value)}
               />
@@ -254,8 +276,7 @@ const Citas: React.FC = () => {
                   clientName: a.client.name,
                   professional: a.worker.name, 
                 }))}
-                onMoreInfo={handleMoreInfo}
-                onCancel={handleCancelAppointment}
+                onUpdateStatus={handleUpdateStatus}
             />
         )}
 
@@ -272,4 +293,4 @@ const Citas: React.FC = () => {
   );
 };
 
-export default Citas;
+export default Appointments;

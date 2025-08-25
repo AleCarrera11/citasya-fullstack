@@ -9,14 +9,11 @@ import { ServiceFormField } from '../../components/InputField';
 import { VscAdd } from "react-icons/vsc";
 import { VscChromeClose } from "react-icons/vsc";
 
-// Interfaz para la especialidad, debe coincidir con la de ServiceGrid.tsx
 interface SpecialtyData {
   id: number;
   name: string;
 }
 
-// Interfaz actualizada para los datos del servicio, ahora con un objeto de especialidad anidado
-// Esto soluciona los errores de tipo con el componente ServiceGrid
 interface ServiceData {
   id: string;
   name: string;
@@ -27,36 +24,27 @@ interface ServiceData {
   status: string;
 }
 
-const Servicios: React.FC = () => {
-  // Estados para los diferentes modales y datos
+const Services: React.FC = () => {
   const [showNewModal, setShowNewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editingService, setEditingService] = useState<ServiceData | null>(null);
   const [deletingServiceId, setDeletingServiceId] = useState('');
-
-  // Estados para los filtros
   const [selectedSpecialty, setSelectedSpecialty] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
-
-  // Estados para la administración de especialidades
   const [specialties, setSpecialties] = useState<SpecialtyData[]>([]);
   const [loadingSpecialties, setLoadingSpecialties] = useState(false);
   const [specialtiesError, setSpecialtiesError] = useState<string | null>(null);
   const [showManageSpecialtyModal, setShowManageSpecialtyModal] = useState(false);
   const [newSpecialtyValue, setNewSpecialtyValue] = useState('');
-
-  // Estados para los servicios
   const [services, setServices] = useState<ServiceData[]>([]);
   const [loadingServices, setLoadingServices] = useState(true);
   const [servicesError, setServicesError] = useState<string | null>(null);
 
   const API_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/admin`;
 
-  // Opciones de estado estáticas con "Todos"
   const statusOptions = ['Todos', 'Activo', 'Inactivo'];
 
-  // Handlers para abrir/cerrar modales
   const handleOpenNewModal = () => setShowNewModal(true);
   const handleCloseNewModal = () => {
     setShowNewModal(false); 
@@ -64,7 +52,6 @@ const Servicios: React.FC = () => {
     fetchServices();
   };
 
-  // El tipo del parámetro serviceData ahora es el correcto
   const handleOpenEditModal = (serviceData: ServiceData) => {
     setEditingService(serviceData);
     setShowEditModal(true);
@@ -84,7 +71,6 @@ const Servicios: React.FC = () => {
     fetchServices();
   };
 
-  // Handlers para el modal de administración de especialidades
   const handleOpenManageSpecialtyModal = () => setShowManageSpecialtyModal(true);
   const handleCloseManageSpecialtyModal = () => {
     setShowManageSpecialtyModal(false);
@@ -138,7 +124,6 @@ const Servicios: React.FC = () => {
     }
   };
 
-  // Handlers para los cambios en los selectores de filtro
   const handleSpecialtyChange = (
     e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement> | { target: { name?: string; value: string | string[] } }
   ) => {
@@ -186,7 +171,6 @@ const Servicios: React.FC = () => {
     }
   };
 
-  // Handlers para las acciones de los botones de la grilla
   const handleEditService = (serviceData: ServiceData) => {
     handleOpenEditModal(serviceData);
   };
@@ -237,13 +221,11 @@ const Servicios: React.FC = () => {
     }
   }, [API_URL]);
 
-  // Cargar las especialidades y servicios al montar el componente
   useEffect(() => {
     fetchSpecialties();
     fetchServices();
   }, [fetchServices, fetchSpecialties]);
 
-  // Construir las opciones del selector de especialidad, incluyendo la opción de administrar
   const specialtySelectOptions = [
     { value: '', label: 'Todos' },
     ...specialties.map(s => ({ value: s.id.toString(), label: s.name })),
@@ -252,7 +234,6 @@ const Servicios: React.FC = () => {
 
   // Lógica de filtrado de servicios
   const filteredServices = services.filter(service => {
-    // service.specialty.id ya viene del backend gracias a la relación de TypeORM
     const isSpecialtyMatch = selectedSpecialty === '' || service.specialty.id.toString() === selectedSpecialty;
     const isStatusMatch = selectedStatus === 'Todos' || selectedStatus === '' || service.status === selectedStatus;
     return isSpecialtyMatch && isStatusMatch;
@@ -393,4 +374,4 @@ const Servicios: React.FC = () => {
   );
 };
 
-export default Servicios;
+export default Services;

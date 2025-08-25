@@ -16,7 +16,7 @@ interface Specialist {
   phone: string;
   documentId: string;
   email: string;
-  services: string[];
+  services:  { id: number; name: string }[];
 }
 
 interface Specialty {
@@ -45,7 +45,6 @@ export const NewSpecialist: React.FC<NewSpecialistProps> = ({ onClose, onWorkerA
   const [availableServices, setAvailableServices] = useState<SelectOption<number>[]>([]);
   const [selectedSpecialties, setSelectedSpecialties] = useState<number[]>([]);
 
-  // 🔹 Cargar todas las especialidades
   useEffect(() => {
     const fetchSpecialties = async () => {
       try {
@@ -67,7 +66,6 @@ export const NewSpecialist: React.FC<NewSpecialistProps> = ({ onClose, onWorkerA
     fetchSpecialties();
   }, []);
 
-  // 🔹 Cargar servicios asociados a varias especialidades
   useEffect(() => {
     if (selectedSpecialties.length > 0) {
       const fetchServicesBySpecialties = async () => {
@@ -83,7 +81,6 @@ export const NewSpecialist: React.FC<NewSpecialistProps> = ({ onClose, onWorkerA
             const data: Service[] = await response.json();
             allServices.push(...data);
           }
-          // Quitar duplicados
           const uniqueServices = Array.from(
             new Map(allServices.map(s => [s.id, s])).values()
           );
@@ -100,11 +97,10 @@ export const NewSpecialist: React.FC<NewSpecialistProps> = ({ onClose, onWorkerA
       fetchServicesBySpecialties();
     } else {
       setAvailableServices([]);
-      setFormData(prev => ({ ...prev, services: [] })); // limpiar servicios si no hay especialidades
+      setFormData(prev => ({ ...prev, services: [] })); 
     }
   }, [selectedSpecialties]);
 
-  // 🔹 Handler para cambiar especialidades (múltiples)
   const handleSpecialtyChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> 
       | { target: { name?: string; value: number | number[] } }
@@ -120,7 +116,6 @@ export const NewSpecialist: React.FC<NewSpecialistProps> = ({ onClose, onWorkerA
     }
   };
 
-  // 🔹 Handler para cambiar servicios (múltiples)
   const handleServicesChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> 
       | { target: { name?: string; value: number | number[] } }
@@ -134,7 +129,6 @@ export const NewSpecialist: React.FC<NewSpecialistProps> = ({ onClose, onWorkerA
     }
   };
 
-  // 🔹 Handler genérico para inputs de texto
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> | { target: { name?: string; value: string | string[] } }
   ) => {
@@ -146,7 +140,6 @@ export const NewSpecialist: React.FC<NewSpecialistProps> = ({ onClose, onWorkerA
     }));
   };
 
-  // 🔹 Guardar especialista
   const handleAddSpecialist = async () => {
     setLoading(true);
     setError(null);

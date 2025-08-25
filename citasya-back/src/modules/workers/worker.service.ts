@@ -18,14 +18,12 @@ export class WorkerService {
     });
   }
 
+  
   async create(workerData: Partial<Worker>): Promise<Worker> {
-    console.log("👉 WorkerService.create - workerData:", workerData);
 
     const newWorker = this.workerRepository.create(workerData);
 
-    // 🔹 Asociar servicios si vienen en el payload
     if (Array.isArray(workerData.services) && workerData.services.length > 0) {
-      console.log("👉 Buscando servicios con IDs:", workerData.services.map(s => Number(s.id)));
 
       const ids = workerData.services.map((s: any) =>
         typeof s === "object" ? Number(s.id) : Number(s)
@@ -44,10 +42,8 @@ export class WorkerService {
       throw new Error("Worker not found");
     }
 
-    // Actualizar datos básicos
     this.workerRepository.merge(workerToUpdate, workerData);
 
-    // 🔹 Actualizar relación ManyToMany con servicios
     if (Array.isArray(workerData.services) && workerData.services.length > 0) {
       const ids = workerData.services.map((s: any) =>
         typeof s === "object" ? Number(s.id) : Number(s)

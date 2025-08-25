@@ -4,7 +4,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { VscAdd, VscSearch } from "react-icons/vsc";
 import { NuevoCliente } from "./NewClient";
-import NewAppointment from "../appointments/NewAppointment";
+import {NewAppointment} from "../appointments/NewAppointment";
 import ClientProfile from "./ClientProfile";
 
 interface Client {
@@ -30,9 +30,7 @@ export function ClientDirectory() {
   const [searchNameOrCedula, setSearchNameOrCedula] = useState("");
   const [searchPhone, setSearchPhone] = useState("");
 
-  /**
-   * Carga los clientes desde la API.
-   */
+
   const fetchClients = async () => {
     try {
       setLoading(true);
@@ -41,7 +39,6 @@ export function ClientDirectory() {
         throw new Error(`Error en la respuesta de la red: ${response.statusText}`);
       }
       const data = await response.json();
-      // Mapea los nombres de las propiedades del backend a las del frontend
       interface BackendClient {
         id: number;
         documentId: string;
@@ -68,12 +65,10 @@ export function ClientDirectory() {
     }
   };
 
-  // Carga los clientes al montar el componente
   useEffect(() => {
     fetchClients();
   }, []);
 
-  // Filtrar según inputs (ignorando mayúsculas/minúsculas)
   const filteredClients = clients.filter((client) => {
     const searchNC = searchNameOrCedula.toLowerCase();
     const searchPh = searchPhone.toLowerCase();
@@ -89,7 +84,6 @@ export function ClientDirectory() {
 
   const handleOpenNewClientModal = () => setShowNewClientModal(true);
   
-  // Función para recargar los datos después de crear un cliente
   const handleCloseNewClientModal = () => {
     setShowNewClientModal(false);
     fetchClients(); 
@@ -103,15 +97,14 @@ export function ClientDirectory() {
   };
   const handleCloseNewAppointmentModal = () => setShowNewAppointmentModal(false);
 
-  // Lógica para manejar el cierre del perfil del cliente (opcional)
+
   const handleCloseProfile = () => {
     setSelectedClient(null);
-    fetchClients(); // Opcional: refresca la lista si el perfil podría haber sido editado o borrado.
+    fetchClients(); 
   };
 
   return (
     <div className="relative flex w-full overflow-hidden">
-      {/* Columna izquierda: Directorio */}
       <main
         className={`transition-all duration-500 transform ${
           selectedClient
@@ -120,7 +113,6 @@ export function ClientDirectory() {
         }`}
       >
         <div className="px-16 pt-12 mx-auto w-full rounded-3xl bg-green-200/40 pb-[602px]">
-          {/* Buscadores y botón */}
           <div className="flex flex-wrap gap-4 w-full text-sm text-neutral-600 justify-between items-center">
             <div className="flex gap-3 px-2 py-3 tracking-normal bg-white rounded-lg">
               <VscSearch className="h-5 w-4 text-neutral-500" />
@@ -155,7 +147,6 @@ export function ClientDirectory() {
           {loading && <div className="p-5 text-center">Cargando clientes...</div>}
           {error && <div className="p-5 text-center text-red-500">{error}</div>}
 
-          {/* Tabla */}
           {!loading && !error && (
             <div className="overflow-hidden mt-20 w-full bg-white rounded-lg ">
               <div className="flex font-bold text-center text-neutral-600">
@@ -168,7 +159,7 @@ export function ClientDirectory() {
               {filteredClients.length > 0 ? (
                 filteredClients.map((client) => (
                   <div
-                    key={client.id} // Usamos el ID de la base de datos como key
+                    key={client.id} 
                     className="flex text-center text-neutral-600 border-t-[2px] border-yellow-700/60"
                   >
                     <div className="flex-1 p-3 justify-center">{client.cedula}</div>
@@ -205,7 +196,6 @@ export function ClientDirectory() {
         </div>
       </main>
 
-      {/* Columna derecha: Perfil (panel deslizante) */}
       <aside
         className={`absolute right-0 top-0 h-full overflow-y-auto transition-transform duration-500 w-[32%] ${
           selectedClient ? "translate-x-0" : "translate-x-full"
@@ -213,9 +203,8 @@ export function ClientDirectory() {
       >
         <div className="ml-8">
           {selectedClient && (
-            // Código corregido
             <ClientProfile
-              clientId={selectedClient.id} // <-- ¡Este es el cambio!
+              clientId={selectedClient.id}
               onCloseProfile={handleCloseProfile}
             />
           )}
@@ -232,8 +221,7 @@ export function ClientDirectory() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-300/50 backdrop-blur-sm">
           <NewAppointment
             onClose={handleCloseNewAppointmentModal}
-            initialName={appointmentClient?.nombre || ""}
-            initialPhone={appointmentClient?.telefono || ""}
+            initialDocumentId={appointmentClient?.cedula || ""}
           />
         </div>
       )}

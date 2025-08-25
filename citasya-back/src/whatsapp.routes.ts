@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { sendWhatsAppMessage } from './twilio/twilio.js';
 import { createSpaAgent } from './agent/agent.js';
 import { BaseMessage, HumanMessage, AIMessage } from '@langchain/core/messages';
-import { AppDataSource } from './data-source.js'; // <--- Importa el origen de datos
+import { AppDataSource } from './data-source.js'; // 
 // import { Message } from '../entities/Message.js'; // Descomenta si creaste esta entidad
 
 const router = Router();
@@ -15,7 +15,6 @@ router.post('/webhook', async (req: Request, res: Response) => {
     try {
         console.log(`Mensaje entrante de ${sender}: "${incomingMsg}"`);
         
-        // Reemplaza la lógica de la base de datos con TypeORM
         // const messageRepository = AppDataSource.getRepository(Message);
         
         // Insertar el mensaje entrante en la base de datos
@@ -41,7 +40,6 @@ router.post('/webhook', async (req: Request, res: Response) => {
         //     }
         // });
         
-        // Código no implementado con TypeORM por falta de la entidad `Message`
         const chatHistory: BaseMessage[] = []; // Placeholder temporal
         
         const agent = await createSpaAgent(chatHistory);

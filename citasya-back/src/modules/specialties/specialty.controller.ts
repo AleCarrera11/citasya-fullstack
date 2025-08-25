@@ -3,8 +3,6 @@ import { SpecialtiesService } from './specialty.service.js';
 
 /**
  * Clase de controlador para manejar las peticiones HTTP de especialidades.
- * Esta capa es delgada; su principal responsabilidad es recibir la petición,
- * llamar al servicio y enviar la respuesta.
  */
 const specialtyService = new SpecialtiesService();
 

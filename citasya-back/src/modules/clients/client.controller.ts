@@ -9,7 +9,7 @@ export class ClientController {
     }
 
     /**
-     * @route GET /api/clients
+     * @route GET /admin/clients
      * @desc Obtiene una lista de todos los clientes.
      */
     public async getAllClients(req: Request, res: Response): Promise<void> {
@@ -23,7 +23,7 @@ export class ClientController {
     }
 
     /**
-     * @route GET /api/clients/:id
+     * @route GET /admin/clients/:id
      * @desc Obtiene un cliente por su ID, incluyendo su historial de citas.
      */
     public async getClientById(req: Request, res: Response): Promise<void> {
@@ -37,7 +37,6 @@ export class ClientController {
             }
 
             // Aquí agregar la lógica para calcular el total invertido
-            // const totalInvertido = await this.clientsService.calculateTotalInvestment(Number(id));
 
             res.status(200).json(client);
         } catch (error) {
@@ -47,7 +46,7 @@ export class ClientController {
     }
 
     /**
-     * @route POST /api/clients
+     * @route POST /admin/clients
      * @desc Crea un nuevo cliente.
      */
     public async createClient(req: Request, res: Response): Promise<void> {
@@ -62,7 +61,7 @@ export class ClientController {
     }
 
     /**
-     * @route PUT /api/clients/:id
+     * @route PUT /admin/clients/:id
      * @desc Actualiza un cliente existente.
      */
     public async updateClient(req: Request, res: Response): Promise<void> {
@@ -84,7 +83,7 @@ export class ClientController {
     }
 
     /**
-     * @route DELETE /api/clients/:id
+     * @route DELETE /admin/clients/:id
      * @desc Elimina un cliente.
      */
     public async deleteClient(req: Request, res: Response): Promise<void> {
@@ -97,7 +96,7 @@ export class ClientController {
                 return;
             }
 
-            res.status(204).send(); // 204 No Content para borrado exitoso
+            res.status(204).send(); 
         } catch (error) {
             console.error(`Error deleting client with id ${req.params.id}:`, error);
             res.status(500).json({ message: "Error al eliminar el cliente." });

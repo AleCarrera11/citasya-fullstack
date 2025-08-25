@@ -4,7 +4,6 @@ import { Repository } from "typeorm";
 
 /**
  * Clase de servicio para manejar la lógica de negocio de las especialidades.
- * Se encarga de toda la interacción con la base de datos a través de TypeORM.
  */
 export class SpecialtiesService {
     private specialtyRepository: Repository<Specialty>;

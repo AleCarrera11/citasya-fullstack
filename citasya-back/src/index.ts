@@ -12,7 +12,7 @@ import whatsappRoutes from './whatsapp.routes.js';
 import specialtyRoutes from './modules/specialties/specialty.routes.js';
 import serviceRoutes from './modules/services/service.routes.js';
 import appointmentRoutes from './modules/appointments/appointment.routes.js';
-//import centerRoutes from './modules/centers/center.routes.js';
+import centerRoutes from './modules/centers/center.routes.js';
 import clientRoutes from './modules/clients/client.routes.js';
 //import userRoutes from './modules/users/user.routes.js';
 import workerRoutes from './modules/workers/worker.routes.js';
@@ -25,7 +25,7 @@ const app = express();
 
 app.use(cors({
     origin: ['http://localhost:3001', 'http://localhost:3000'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
     credentials: true
 }));
 
@@ -47,13 +47,14 @@ AppDataSource.initialize()
         app.use('/admin/specialties', specialtyRoutes);
         app.use('/admin/services', serviceRoutes);
         app.use('/admin/appointments', appointmentRoutes);
-        //app.use('/admin/centers', centerRoutes);
+        app.use('/admin/centers', centerRoutes);
         app.use('/admin/clients', clientRoutes);
         app.use('/admin/workers', workerRoutes);
         //app.use('/admin/users', userRoutes);
-
+        
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
+            
         });
     })
     .catch((err) => {

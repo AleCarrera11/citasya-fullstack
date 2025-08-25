@@ -13,7 +13,6 @@ interface SpecialtyData {
 interface ServiceData {
   id: string;
   name: string;
-  // El backend retorna un objeto completo de especialidad
   specialty: SpecialtyData; 
   description: string;
   minutes_duration: number;
@@ -56,7 +55,6 @@ export const ServiceGrid: React.FC<ServiceGridProps> = ({
             key={service.id}
             className="relative flex flex-col p-12 bg-green-300/20 rounded-[30px] shadow-lg max-md:p-4"
           >
-            {/* Botones de edición/eliminación */}
             <button
               onClick={() => onEditService(service)}
               className="absolute top-6 right-16 text-yellow-700/60 hover:text-yellow-700 transition-colors"
@@ -70,7 +68,6 @@ export const ServiceGrid: React.FC<ServiceGridProps> = ({
               <VscChromeClose className="size-5" />
             </button>
 
-            {/* Datos del servicio */}
             <h2
               className="text-3xl items-center font-bold text-yellow-700/60 leading-tight"
               style={{ fontFamily: 'Roboto Condensed, sans-serif' }}
@@ -80,7 +77,6 @@ export const ServiceGrid: React.FC<ServiceGridProps> = ({
 
             <div className="flex items-center mt-2 text-neutral-500 text-m font-bold">
               <TbCategory className="mr-2" />
-              {/* Accede al nombre de la especialidad desde el objeto anidado */}
               <span>{service.specialty.name}</span>
             </div>
 

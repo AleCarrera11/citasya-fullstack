@@ -14,7 +14,6 @@ export class ServicesController {
         }
     }
 
-    // Nuevo método para obtener servicios por ID de especialidad
     async getServicesBySpecialtyId(req: Request, res: Response): Promise<Response> {
         const specialtyId = parseInt(req.params.specialtyId);
         if (isNaN(specialtyId)) {
@@ -22,7 +21,6 @@ export class ServicesController {
         }
         
         try {
-            // Se llama al método del servicio para obtener los datos
             const services = await servicesService.findBySpecialtyId(specialtyId);
             return res.status(200).json(services);
         } catch (error) {

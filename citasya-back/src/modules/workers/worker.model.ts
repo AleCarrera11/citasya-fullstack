@@ -4,7 +4,7 @@ import { Appointment } from "../appointments/appointment.model.js";
 import { Service } from "../services/service.model.js";
 
 /**
- * Enumeración para el estado de un trabajador.
+ * Enum para el estado de un trabajador.
  */
 export enum WorkerStatus {
     Activo = "Activo",

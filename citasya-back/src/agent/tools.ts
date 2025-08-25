@@ -63,15 +63,13 @@ export const createClientTool = new DynamicStructuredTool({
             const newClient = clientRepository.create({
                 name: nombre_completo,
                 documentId: cedula,
-                // Aquí necesitarías manejar la fecha de nacimiento si la tienes en tu entidad
+                
                 phone: telefono
             });
             await clientRepository.save(newClient);
             return `Cliente creado exitosamente con el ID: ${newClient.id}.`;
         } catch (error) {
             console.error("Error al crear el cliente:", error);
-            // Manejar error de duplicado (código '23505' en PostgreSQL)
-            // No se puede manejar tan fácil con TypeORM de forma genérica, pero se puede hacer con un 'try-catch' y un findOne previo
             return "Hubo un error al crear el cliente en la base de datos. Es posible que el número de cédula ya exista.";
         }
     }
@@ -106,7 +104,7 @@ export const getServiceDetailsTool = new DynamicStructuredTool({
     func: async ({ servicio }) => {
         const serviceRepository = AppDataSource.getRepository(Service);
         const service = await serviceRepository.findOne({
-            where: { name: servicio } // Cambiado a búsqueda exacta para evitar problemas
+            where: { name: servicio } 
         });
         if (!service) {
             return `Lo siento, no pude encontrar detalles sobre el servicio '${servicio}'.`;
@@ -185,7 +183,7 @@ export const bookAppointmentTool = new DynamicStructuredTool({
                 service: service,
                 date: new Date(fecha),
                 hour: hora,
-                status: AppointmentStatus.Pendiente // Use the correct enum value
+                status: AppointmentStatus.Pendiente 
             });
 
             await queryRunner.manager.save(newAppointment);
@@ -245,8 +243,8 @@ export const listUserAppointmentsTool = new DynamicStructuredTool({
         const appointments = await appointmentRepository.find({
             where: {
                 client: { id: client.id },
-                date: MoreThanOrEqual(today), // Usa el objeto Date directamente
-                status: AppointmentStatus.Pendiente // Usa el enum correcto
+                date: MoreThanOrEqual(today), 
+                status: AppointmentStatus.Pendiente 
             },
             relations: ["service"],
             order: { date: "ASC", hour: "ASC" }
@@ -280,8 +278,7 @@ export const cancelAppointmentTool = new DynamicStructuredTool({
             return `Lo siento, no pude encontrar una cita con el ID ${citaId}. Por favor, verifica el número y vuelve a intentarlo.`;
         }
         
-        appointmentToCancel.status = AppointmentStatus.Cancelado; // Usa el valor correcto del Enum
-        
+        appointmentToCancel.status = AppointmentStatus.Cancelado; 
         try {
             await appointmentRepository.save(appointmentToCancel);
             // Falta cancelar el evento en Google Calendar.

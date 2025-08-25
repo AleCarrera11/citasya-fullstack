@@ -17,6 +17,7 @@ export class WorkerController {
     }
   }
 
+  
   async getOne(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const worker = await this.workerService.findById(Number(req.params.id));
@@ -61,7 +62,7 @@ export class WorkerController {
     try {
       const id = Number(req.params.id);
       await this.workerService.delete(id);
-      res.status(204).end(); // 204 No Content
+      res.status(204).end(); 
     } catch (error) {
       next(error);
     }

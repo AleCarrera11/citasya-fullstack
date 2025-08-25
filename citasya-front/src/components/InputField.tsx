@@ -3,13 +3,11 @@
 import React, { ChangeEvent } from 'react';
 import Select from 'react-select';
 
-// La interfaz ahora es genérica para manejar valores de cualquier tipo (T)
 export interface SelectOption<T> {
   value: T;
   label: string;
 }
 
-// Las props del componente también son genéricas
 interface ServiceFormFieldProps<T extends string | number> {
   label: string;
   placeholder?: string;
@@ -18,7 +16,7 @@ interface ServiceFormFieldProps<T extends string | number> {
   options?: SelectOption<T>[];
   multiple?: boolean;
   name?: string;
-  value: T | T[] | ''; // ' ' se incluye para el placeholder de select
+  value: T | T[] | ''; 
   onChange?: (
     e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
     | { target: { name?: string; value: T | T[] } }
@@ -28,7 +26,6 @@ interface ServiceFormFieldProps<T extends string | number> {
   disabled?: boolean;
 }
 
-// El componente se define con el tipo genérico
 export const ServiceFormField = <T extends string | number>({
   label,
   placeholder,

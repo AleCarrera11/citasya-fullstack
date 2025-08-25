@@ -33,7 +33,6 @@ export const EditarCliente: React.FC<EditarClienteProps> = ({ onClose, clientDat
       | { target: { name?: string; value: string | string[] } }
   ) => {
     const { name, value } = e.target;
-    // La lógica de tipo para manejar 'value' como 'string' o 'string[]'
     const newValue = typeof value === 'string' ? value : value[0];
     setFormData(prev => ({ ...prev, [name as string]: newValue }));
   };
@@ -42,12 +41,11 @@ export const EditarCliente: React.FC<EditarClienteProps> = ({ onClose, clientDat
     setLoading(true);
     setError(null);
 
-    // Mapeo de los datos del formulario a la estructura del backend
     const clientUpdateData = {
       name: formData.nombre,
       documentId: formData.cedula,
       phone: formData.telefono,
-      notes: formData.notes, // El nombre de la variable debe ser 'notes'
+      notes: formData.notes, 
     };
 
     try {
@@ -75,7 +73,6 @@ export const EditarCliente: React.FC<EditarClienteProps> = ({ onClose, clientDat
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <main className="max-w-[679px] w-full">
         <div className="flex flex-col py-9 w-full bg-neutral-100 rounded-[30px] shadow-lg">
-          {/* Header */}
           <div className="flex flex-row justify-between items-center w-full px-10">
             <div className="flex-1"></div>
             <h1 className="text-4xl font-bold leading-none text-center text-yellow-700/60" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
@@ -89,9 +86,7 @@ export const EditarCliente: React.FC<EditarClienteProps> = ({ onClose, clientDat
               <VscChromeClose className="inline-block w-6 h-6" />
             </button>
           </div>
-          
 
-          {/* Formulario */}
           <form className="flex flex-col px-10 mt-8 w-full text-neutral-600" onSubmit={(e) => {e.preventDefault(); handleUpdateClient();}}>
             <ServiceFormField
               label="Nombre:"

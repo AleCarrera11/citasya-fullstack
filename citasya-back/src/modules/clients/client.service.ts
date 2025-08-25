@@ -2,6 +2,9 @@ import { AppDataSource } from "../../data-source.js";
 import { Client } from "./client.model.js";
 import { Appointment } from "../appointments/appointment.model.js";
 
+/**
+ * Clase de servicio para manejar la lógica de negocio de los clientes.
+ */
 export class ClientService {
     private clientRepository = AppDataSource.getRepository(Client);
     private appointmentRepository = AppDataSource.getRepository(Appointment);
@@ -19,7 +22,17 @@ export class ClientService {
     public async findClientById(id: number): Promise<Client | null> {
         return this.clientRepository.findOne({
             where: { id },
-            relations: ["appointments"] // Carga la relación 'appointments'
+            relations: ["appointments"]
+        });
+    }
+
+    /**
+     * Busca un cliente por su número de documento.
+     */
+    public async findClientByDocumentId(documentId: string): Promise<Client | null> {
+        return this.clientRepository.findOne({
+            where: { documentId },
+            relations: ["appointments"] 
         });
     }
 
@@ -51,18 +64,4 @@ export class ClientService {
         const result = await this.clientRepository.delete(id);
         return result.affected !== 0;
     }
-
-    /**
-     * Calcula el total invertido por un cliente.
-     * Esta es una lógica adicional que deberías implementar.
-     */
-    // public async calculateTotalInvestment(clientId: number): Promise<number> {
-    //     const appointments = await this.appointmentRepository
-    //         .createQueryBuilder("appointment")
-    //         .select("SUM(appointment.price)", "total")
-    //         .where("appointment.clientId = :clientId", { clientId })
-    //         .getRawOne();
-    //
-    //     return appointments.total || 0;
-    // }
 }

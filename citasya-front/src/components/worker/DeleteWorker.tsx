@@ -15,7 +15,6 @@ export const DeleteSpecialist: React.FC<DeleteSpecialistProps> = ({ onClose, onC
       <main className="max-w-[400px] w-full">
         <div className="flex flex-col py-9 px-8 w-full bg-neutral-100 rounded-[30px] shadow-lg">
           
-          {/* Header */}
           <div className="flex flex-row justify-between items-center w-full px-10 gap-6">
             <div className="flex-1"></div>
             <h1 className="text-2xl font-bold leading-none text-center text-yellow-700/60" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
@@ -30,13 +29,11 @@ export const DeleteSpecialist: React.FC<DeleteSpecialistProps> = ({ onClose, onC
             </button>
           </div>
 
-          {/* Mensaje */}
           <div className="text-center mt-6 mb-8 text-neutral-600">
             <p>¿Estás seguro de que deseas eliminar este especialista?</p>
             <p>Esta acción no se puede deshacer.</p>
           </div>
 
-          {/* Botones */}
           <div className="flex justify-center gap-4">
             <button
               onClick={onClose}

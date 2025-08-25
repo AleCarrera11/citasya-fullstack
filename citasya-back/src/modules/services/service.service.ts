@@ -57,7 +57,7 @@ export class ServicesService {
 
         const newService = this.serviceRepository.create({
             name: serviceData.name,
-            specialty, // Asigna la entidad completa
+            specialty, 
             description: serviceData.description,
             minutes_duration: serviceData.minutes_duration,
             price: serviceData.price,
@@ -83,10 +83,8 @@ export class ServicesService {
             return null;
         }
 
-        // Validación y asignación del estado
         const serviceStatus = serviceData.status as ServiceStatus;
         if (!Object.values(ServiceStatus).includes(serviceStatus)) {
-            // Maneja el caso de un estado no válido si es necesario
             console.error('Estado de servicio no válido:', serviceData.status);
             return null;
         }

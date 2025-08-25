@@ -9,7 +9,6 @@ const poppinsFontUrl = "https://fonts.googleapis.com/css2?family=Poppins:wght@40
 const robotoCondensedFontUrl = "https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap";
 
 export const Header: React.FC = () => {
-  // Para simular la ruta activa en un entorno sin Next.js
   const [activePath, setActivePath] = useState('/');
 
   // Array de links para la navegación
@@ -20,7 +19,6 @@ export const Header: React.FC = () => {
     { name: 'ESPECIALISTAS', href: '/workers' },
   ];
 
-  // Agrega un useEffect para cargar las fuentes
   useEffect(() => {
     const poppinsLink = document.createElement('link');
     poppinsLink.href = poppinsFontUrl;
@@ -46,9 +44,6 @@ export const Header: React.FC = () => {
               CitasYa
             </Link>
             
-            <h2 className="text-4xl text-yellow-700/60 max-sm:text-3xl font-medium" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
-              SPA CARACAS
-            </h2>
         </div>
 
         <div className="flex items-center gap-12  max-sm:flex-col  max-sm:items-start">
@@ -70,7 +65,6 @@ export const Header: React.FC = () => {
             })}
           </nav>
 
-          {/* Ícono de perfil */}
             <Link href="/profile" className="ml-12 max-md:ml-5">
             <button
               type="button"

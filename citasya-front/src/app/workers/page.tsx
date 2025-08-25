@@ -2,7 +2,7 @@
 import * as React from "react";
 import { SpecialistList } from "../../components/worker/WorkerList";
 
-function Especialista() {
+function Workers() {
   return (
     <div className="z-0 relative w-full min-h-screen flex flex-col items-center pb-20 bg-neutral-100">
       <main className="mt-8 ml-10 w-full max-w-[1273px] max-md:mt-10 max-md:max-w-full flex flex-col">
@@ -21,4 +21,4 @@ function Especialista() {
 }
 
 
-export default Especialista;
+export default Workers;

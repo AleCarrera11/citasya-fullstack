@@ -6,7 +6,6 @@ import { VscEdit } from "react-icons/vsc";
 import { EditarCliente } from "./EditClient";
 import { EliminarCliente } from "./DeleteClient";
 
-// Nueva interfaz para los datos completos del cliente desde el backend
 interface FullClientData {
   id: number;
   name: string;
@@ -21,7 +20,7 @@ interface FullClientData {
 }
 
 interface ClientProfileProps {
-  clientId: number; // Ahora solo necesitamos el ID
+  clientId: number; 
   onCloseProfile: () => void;
 }
 
@@ -41,7 +40,7 @@ export default function ClientProfile({ clientId, onCloseProfile }: ClientProfil
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`http://localhost:3000/admin/clients/${clientId}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/clients/${clientId}`);
       if (!response.ok) {
         throw new Error(`Error en la respuesta de la red: ${response.statusText}`);
       }
@@ -62,14 +61,14 @@ export default function ClientProfile({ clientId, onCloseProfile }: ClientProfil
 
   useEffect(() => {
     fetchClientProfile();
-  }, [clientId, fetchClientProfile]); // Vuelve a cargar cuando el ID del cliente cambie
+  }, [clientId, fetchClientProfile]); 
 
   /**
    * Maneja la eliminación de un cliente.
    */
   const handleDeleteClient = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/admin/clients/${clientId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/clients/${clientId}`, {
         method: "DELETE",
       });
 
@@ -78,14 +77,13 @@ export default function ClientProfile({ clientId, onCloseProfile }: ClientProfil
       }
 
       setShowDeleteModal(false);
-      onCloseProfile(); // Cierra el panel del perfil y refresca la lista en el componente padre
+      onCloseProfile(); 
     } catch (e) {
       console.error("Error deleting client:", e);
-      // Podrías mostrar una notificación de error aquí
+
     }
   };
 
-  // Se muestra un mensaje de carga o error si es necesario
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -102,7 +100,6 @@ export default function ClientProfile({ clientId, onCloseProfile }: ClientProfil
     );
   }
 
-  // Si no hay datos (por ejemplo, si el cliente fue borrado)
   if (!fullClientData) {
     return (
       <div className="flex justify-center items-center h-full">
