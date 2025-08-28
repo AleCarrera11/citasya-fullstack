@@ -114,6 +114,10 @@
   "exclude": ["node_modules"],
   "ts-node": {
     "esm": true
+  },
+  "watchOptions": {
+    "watchFile": "dynamicPriorityPolling",
+    "watchDirectory": "dynamicPriorityPolling"
   }
      
 
