@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { Appointment } from "./modules/appointments/appointment.model.js";
-import { Center } from "./modules/centers/center.model.js";
 import { Client } from "./modules/clients/client.model.js";
 import { Service } from "./modules/services/service.model.js";
 import { Specialty } from "./modules/specialties/specialty.model.js";
@@ -17,7 +16,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: true,
     logging: true,
-    entities: [Center, User, Specialty, Client, Worker, Service, Appointment],
+    entities: [User, Specialty, Client, Worker, Service, Appointment],
     migrations: [],
     subscribers: [],
 });

@@ -1,6 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
-import { Center } from "../centers/center.model.js"; 
-import { Service } from "../services/service.model.js"; 
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Service } from "../services/service.model.js";
 
 /**
  * Entidad de TypeORM para la tabla 'Specialties'.
@@ -16,12 +15,6 @@ export class Specialty {
     
     @Column({ type: "text", nullable: true })
     description!: string;
-
-    @Column({ type: "int", nullable: true })
-    center_id!: number;
-
-    @ManyToOne(() => Center, (center: Center) => center.specialties)
-    center!: Center;
 
     @OneToMany(() => Service, (service: Service) => service.specialty)
     services!: Service[];

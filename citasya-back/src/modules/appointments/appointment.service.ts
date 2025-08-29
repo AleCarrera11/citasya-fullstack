@@ -31,6 +31,9 @@ export class AppointmentsService {
         this.serviceRepository = AppDataSource.getRepository(Service);
     }
 
+    /**
+     * Obtiene todas las citas de la base de datos.
+     */
     async findAll(): Promise<Appointment[]> {
         return this.appointmentRepository.find({
             relations: ["client", "worker", "service"],
@@ -40,7 +43,7 @@ export class AppointmentsService {
     }
 
     /**
-     * Crea una nueva cita y un evento en Google Calendar
+     * Crea una cita y la registra en Google Calendar.
      */
     async createAppointment(data: {
         clientDocumentId: string;
@@ -49,7 +52,6 @@ export class AppointmentsService {
         date: string;
         hour: string;
     }): Promise<Appointment> {
-        console.log('📋 Datos recibidos para crear cita:', data);
         
         try {
             const queryRunner = AppDataSource.createQueryRunner();
@@ -63,9 +65,7 @@ export class AppointmentsService {
                 const client = await this.clientRepository.findOne({
                     where: { documentId: data.clientDocumentId },
                 });
-    
-                console.log('👤 Cliente encontrado:', client);
-    
+        
                 if (!client) {
                     throw new Error("Cliente no encontrado. Verifique el documento de identidad.");
                 }
@@ -73,9 +73,6 @@ export class AppointmentsService {
                 // 2. Buscar el servicio y trabajador
                 const service = await this.serviceRepository.findOneBy({ id: data.serviceId });
                 const worker = await this.workerRepository.findOneBy({ id: data.workerId });
-    
-                console.log('🔍 Servicio encontrado:', service);
-                console.log('🔍 Worker encontrado:', worker);
     
                 if (!service) {
                     throw new Error("Servicio no encontrado");
@@ -95,9 +92,7 @@ export class AppointmentsService {
                     worker,
                 });
     
-                console.log('💾 Guardando cita...');
                 savedAppointment = await queryRunner.manager.save(appointment);
-                console.log('✅ Cita guardada:', savedAppointment);
                 
                 // 4. Crear el evento en Google Calendar
                 // Falta configurar el calculo de hora fin con servicio
@@ -118,10 +113,8 @@ export class AppointmentsService {
                         calendarId: CALENDAR_ID,
                         requestBody: event,
                     });
-                    console.log('✅ Evento de calendario creado:', calendarResponse.data.htmlLink);
                 } catch (calendarError) {
                     // Si el evento de calendario falla, se registra el error pero no se revierte la transacción de la base de datos.
-                    console.error('⚠️ Error al crear evento en Google Calendar:', calendarError);
                 }
 
                 await queryRunner.commitTransaction();
@@ -133,11 +126,13 @@ export class AppointmentsService {
                 await queryRunner.release();
             }
         } catch (error) {
-            console.error('❌ Error en createAppointment:', error);
             throw error;
         }
     }
 
+    /**
+     * Actualiza el estado de una cita.
+     */
     async updateStatus(id: number, status: string): Promise<Appointment> {
         const appointment = await this.appointmentRepository.findOne({
             where: { id },

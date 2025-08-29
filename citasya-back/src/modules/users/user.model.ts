@@ -1,11 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Center } from "../centers/center.model.js";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
+/**
+ * Enum para los roles de usuario.
+ */
 export enum UserRole {
     Admin = "Admin",
     Coordinator = "Coordinator"
 }
 
+/**
+ * Entidad de TypeORM para la tabla 'users'.
+ * Representa el modelo de datos para un usuario en la base de datos.
+ */
 @Entity("users")
 export class User {
     @PrimaryGeneratedColumn()
@@ -31,10 +37,4 @@ export class User {
         enum: UserRole
     })
     role!: UserRole;
-
-    @Column({ type: "int", nullable: true })
-    center_id!: number;
-
-    @ManyToOne(() => Center, (center: Center) => center.users)
-    center!: Center;
 }

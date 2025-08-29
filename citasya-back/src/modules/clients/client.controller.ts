@@ -1,20 +1,21 @@
 import { Request, Response } from 'express';
 import { ClientService } from './client.service.js';
 
+// Instancia directa del servicio
+const clientService = new ClientService();
+
+/**
+ * Controlador para las rutas relacionadas con clientes.
+ * Gestiona las operaciones CRUD para los clientes.
+ */
 export class ClientController {
-    private clientService: ClientService;
-
-    constructor() {
-        this.clientService = new ClientService();
-    }
-
     /**
-     * @route GET /admin/clients
-     * @desc Obtiene una lista de todos los clientes.
+     * Obtiene una lista de todos los clientes.
+     * @return JSON con los clientes encontrados.
      */
-    public async getAllClients(req: Request, res: Response): Promise<void> {
+    async getAllClients(req: Request, res: Response): Promise<void> {
         try {
-            const clients = await this.clientService.findAllClients();
+            const clients = await clientService.findAllClients();
             res.status(200).json(clients);
         } catch (error) {
             console.error("Error fetching clients:", error);
@@ -23,13 +24,13 @@ export class ClientController {
     }
 
     /**
-     * @route GET /admin/clients/:id
-     * @desc Obtiene un cliente por su ID, incluyendo su historial de citas.
+     * Busca un cliente por su ID, incluyendo su historial de citas.
+     * @return JSON con el cliente encontrado o mensaje de error.
      */
-    public async getClientById(req: Request, res: Response): Promise<void> {
+    async getClientById(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
-            const client = await this.clientService.findClientById(Number(id));
+            const client = await clientService.findClientById(Number(id));
 
             if (!client) {
                 res.status(404).json({ message: "Cliente no encontrado." });
@@ -46,13 +47,13 @@ export class ClientController {
     }
 
     /**
-     * @route POST /admin/clients
-     * @desc Crea un nuevo cliente.
+     * Crea un nuevo cliente.
+     * @return JSON con el cliente creado o mensaje de error.
      */
-    public async createClient(req: Request, res: Response): Promise<void> {
+    async createClient(req: Request, res: Response): Promise<void> {
         try {
             const clientData = req.body;
-            const newClient = await this.clientService.createClient(clientData);
+            const newClient = await clientService.createClient(clientData);
             res.status(201).json(newClient);
         } catch (error) {
             console.error("Error creating client:", error);
@@ -61,14 +62,14 @@ export class ClientController {
     }
 
     /**
-     * @route PUT /admin/clients/:id
-     * @desc Actualiza un cliente existente.
+     * Actualiza los datos de un cliente existente.
+     * @return JSON con el cliente actualizado o mensaje de error.
      */
-    public async updateClient(req: Request, res: Response): Promise<void> {
+    async updateClient(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
             const clientData = req.body;
-            const updatedClient = await this.clientService.updateClient(Number(id), clientData);
+            const updatedClient = await clientService.updateClient(Number(id), clientData);
 
             if (!updatedClient) {
                 res.status(404).json({ message: "Cliente no encontrado." });
@@ -83,13 +84,13 @@ export class ClientController {
     }
 
     /**
-     * @route DELETE /admin/clients/:id
-     * @desc Elimina un cliente.
+     * Elimina un cliente por su ID.
+     * @return Respuesta vacía si se elimina o mensaje de error.
      */
-    public async deleteClient(req: Request, res: Response): Promise<void> {
+    async deleteClient(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
-            const result = await this.clientService.deleteClient(Number(id));
+            const result = await clientService.deleteClient(Number(id));
 
             if (!result) {
                 res.status(404).json({ message: "Cliente no encontrado." });

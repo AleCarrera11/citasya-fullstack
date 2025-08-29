@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
-import { Center } from "../centers/center.model.js";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Appointment } from "../appointments/appointment.model.js";
+import { AgentMessage } from "../agent-messages/agent-message.model.js";
 
 /**
  * Entidad de TypeORM para la tabla 'Clients'.
@@ -23,12 +23,9 @@ export class Client {
     @Column({ type: "text", nullable: true })
     notes!: string;
 
-    @Column({ type: "int", nullable: true })
-    center_id!: number;
-
-    @ManyToOne(() => Center, center => center.clients)
-    center!: Center;
-
     @OneToMany(() => Appointment, appointment => appointment.client)
     appointments!: Appointment[];
+
+    @OneToMany(() => AgentMessage, msg => msg.client)
+    messages!: AgentMessage[];
 }

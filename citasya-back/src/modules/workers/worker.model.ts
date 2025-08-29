@@ -1,5 +1,4 @@
-import {Entity,PrimaryGeneratedColumn,Column,ManyToOne,OneToMany,JoinTable,ManyToMany} from "typeorm";
-import { Center } from "../centers/center.model.js";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinTable, ManyToMany } from "typeorm";
 import { Appointment } from "../appointments/appointment.model.js";
 import { Service } from "../services/service.model.js";
 
@@ -40,12 +39,6 @@ export class Worker {
         enum: WorkerStatus
     })
     status!: WorkerStatus;
-
-    @Column({ type: "int", nullable: true })
-    center_id!: number;
-
-    @ManyToOne(() => Center, (center: Center) => center.workers)
-    center!: Center;
 
     @OneToMany(() => Appointment, (appointment: Appointment) => appointment.worker)
     appointments!: Appointment[];

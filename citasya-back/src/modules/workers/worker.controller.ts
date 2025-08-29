@@ -8,6 +8,10 @@ export class WorkerController {
     this.workerService = new WorkerService();
   }
 
+  /**
+   * Obtiene todos los trabajadores.
+   * @return JSON con la lista de trabajadores.
+   */
   async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const workers = await this.workerService.findAll();
@@ -17,7 +21,10 @@ export class WorkerController {
     }
   }
 
-  
+  /**
+   * Obtiene un trabajador por su ID.
+   * @return JSON con el trabajador encontrado o mensaje de error.
+   */
   async getOne(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const worker = await this.workerService.findById(Number(req.params.id));
@@ -31,22 +38,25 @@ export class WorkerController {
     }
   }
 
+  /**
+   * Crea un nuevo trabajador.
+   * @return JSON con el trabajador creado.
+   */
   async create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      console.log("👉 Body recibido en create worker:", req.body);
-
       const newWorkerData = req.body;
       const newWorker = await this.workerService.create(newWorkerData);
-      console.log("✅ Worker creado:", newWorker);
 
       res.status(201).json(newWorker);
     } catch (error) {
-      console.error("❌ Error en WorkerController.create:", error);
-
       next(error);
     }
   }
 
+  /**
+   * Actualiza los datos de un trabajador existente.
+   * @return JSON con el trabajador actualizado.
+   */
   async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id = Number(req.params.id);
@@ -58,6 +68,10 @@ export class WorkerController {
     }
   }
 
+  /**
+   * Elimina un trabajador por su ID.
+   * @return Respuesta vacía si se elimina correctamente.
+   */
   async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id = Number(req.params.id);

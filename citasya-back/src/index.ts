@@ -7,12 +7,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { AppDataSource } from './data-source.js';
 
-// Importa los routers modulares
+// Routers modulares
 import whatsappRoutes from './whatsapp.routes.js';
 import specialtyRoutes from './modules/specialties/specialty.routes.js';
 import serviceRoutes from './modules/services/service.routes.js';
 import appointmentRoutes from './modules/appointments/appointment.routes.js';
-import centerRoutes from './modules/centers/center.routes.js';
 import clientRoutes from './modules/clients/client.routes.js';
 //import userRoutes from './modules/users/user.routes.js';
 import workerRoutes from './modules/workers/worker.routes.js';
@@ -42,12 +41,10 @@ AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!");
 
-        // Conecta los routers modulares a sus prefijos de ruta
         app.use('/whatsapp', whatsappRoutes);
         app.use('/admin/specialties', specialtyRoutes);
         app.use('/admin/services', serviceRoutes);
         app.use('/admin/appointments', appointmentRoutes);
-        app.use('/admin/centers', centerRoutes);
         app.use('/admin/clients', clientRoutes);
         app.use('/admin/workers', workerRoutes);
         //app.use('/admin/users', userRoutes);

@@ -4,6 +4,10 @@ import { ServicesService } from './service.service.js';
 const servicesService = new ServicesService();
 
 export class ServicesController {
+    /**
+     * Obtiene todos los servicios.
+     * @return JSON con la lista de servicios o mensaje de error.
+     */
     async getAllServices(req: Request, res: Response): Promise<Response> {
         try {
             const services = await servicesService.findAll();
@@ -14,6 +18,10 @@ export class ServicesController {
         }
     }
 
+    /**
+     * Obtiene servicios por ID de especialidad.
+     * @return JSON con los servicios encontrados o mensaje de error.
+     */
     async getServicesBySpecialtyId(req: Request, res: Response): Promise<Response> {
         const specialtyId = parseInt(req.params.specialtyId);
         if (isNaN(specialtyId)) {
@@ -29,6 +37,10 @@ export class ServicesController {
         }
     }
 
+    /**
+     * Crea un nuevo servicio.
+     * @return JSON con el servicio creado o mensaje de error.
+     */
     async createService(req: Request, res: Response): Promise<Response> {
         const serviceData = req.body;
         try {
@@ -43,6 +55,10 @@ export class ServicesController {
         }
     }
 
+    /**
+     * Actualiza un servicio existente.
+     * @return JSON con el servicio actualizado o mensaje de error.
+     */
     async updateService(req: Request, res: Response): Promise<Response> {
         const { id } = req.params;
         const serviceData = req.body;
@@ -58,6 +74,10 @@ export class ServicesController {
         }
     }
 
+    /**
+     * Elimina un servicio por su ID.
+     * @return Respuesta vacía si se elimina o mensaje de error.
+     */
     async deleteService(req: Request, res: Response): Promise<Response> {
         const { id } = req.params;
         try {
