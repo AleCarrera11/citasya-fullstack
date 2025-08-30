@@ -201,12 +201,12 @@ export const NewAppointment: React.FC<NewAppointmentProps> = ({ onClose, initial
   };
 
   return ReactDOM.createPortal(
-    <main className="fixed inset-0 z-50 flex items-center justify-center ">
+    <main className="fixed inset-0 z-50 flex items-center justify-center " style={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className="max-w-2xl w-full mx-4 sm:mx-6 md:mx-auto">
         <div className="flex flex-col py-9 px-6 sm:px-10 md:px-12 w-full bg-neutral-100 rounded-[30px] shadow-2xl">
           <header className="flex justify-between items-center w-full">
             <div className="flex-1"></div>
-            <h1 className="text-4xl font-bold leading-none text-center text-yellow-700/60" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
+            <h1 className="text-4xl font-medium leading-none text-center text-[#447F98]" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
               Nueva Cita
             </h1>
             <button
@@ -286,7 +286,7 @@ export const NewAppointment: React.FC<NewAppointmentProps> = ({ onClose, initial
             <button
               onClick={e => { e.preventDefault(); handleAddAppointment(); }}
               type="button"
-              className="flex justify-center self-center px-11 py-5 mt-10 max-w-full text-base font-bold text-center text-white bg-yellow-700/60 rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] w-[149px] max-md:px-5 hover:bg-yellow-700/80 transition-colors duration-200"
+              className="flex justify-center self-center px-11 py-5 mt-10 max-w-full text-sm font-bold text-center text-white bg-[#447F98] rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] w-[149px] max-md:px-5 hover:bg-[#629BB5] transition-colors duration-200"
               style={{ fontFamily: 'Poppins, sans-serif' }}
               disabled={loading}
             >

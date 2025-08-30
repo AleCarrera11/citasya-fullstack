@@ -58,7 +58,7 @@ export const AppointmentsList: React.FC<AppointmentsListProps> = () => {
 
   if (loading) {
     return (
-      <section className="flex flex-col pt-4 mx-auto w-full font-medium bg-white rounded-3xl shadow-[4px_4px_6px_rgba(0,0,0,0.25)] max-md:mt-10 max-md:max-w-full">
+      <section className="flex flex-col pt-4 mx-auto w-full font-medium bg-white rounded-lg shadow-md max-md:mt-10 max-md:max-w-full">
         <div className="text-center py-8 text-neutral-500">
           Cargando citas...
         </div>
@@ -68,7 +68,7 @@ export const AppointmentsList: React.FC<AppointmentsListProps> = () => {
 
   if (error) {
     return (
-      <section className="flex flex-col pt-4 mx-auto w-full font-medium bg-white rounded-3xl shadow-[4px_4px_6px_rgba(0,0,0,0.25)] max-md:mt-10 max-md:max-w-full">
+      <section className="flex flex-col pt-4 mx-auto w-full font-medium bg-white rounded-lg shadow-md max-md:mt-10 max-md:max-w-full">
         <div className="text-center py-8 text-red-500">
           {error}
         </div>
@@ -84,18 +84,18 @@ export const AppointmentsList: React.FC<AppointmentsListProps> = () => {
   };
 
   return (
-    <section className="flex flex-col pt-4 mx-auto w-full font-medium bg-white rounded-3xl shadow-[4px_4px_6px_rgba(0,0,0,0.25)] max-md:mt-10 max-md:max-w-full">
-      <h2 className="self-center text-3xl font-bold tracking-wide leading-none text-center text-neutral-700">
+    <section className="flex flex-col mx-auto w-full font-medium bg-white rounded-lg shadow-md max-md:mt-10 max-md:max-w-full">
+      <h2 className="self-center p-6 text-md font-medium rounded-t-lg text-left text-neutral-700 bg-neutral-100 w-full">
         Próximas citas
       </h2>
-      <div className="mt-6">
+      <div>
         {appointments.length === 0 && (
           <div className="text-center py-4 text-neutral-500">
             No hay citas agendadas.
           </div>
         )}
         
-        {appointments.map((appointment) => (
+        {appointments.slice(0, 8).map((appointment) => (
           <AppointmentItem
             key={appointment.id}
             clientName={appointment.client.name}
@@ -104,6 +104,14 @@ export const AppointmentsList: React.FC<AppointmentsListProps> = () => {
             time={formatTime(appointment.hour)}
           />
         ))}
+      </div>
+      <div className="mt-4 text-center pb-6">
+        <a
+          href="/appointments"
+          className="text-[#447F98] hover:text-[#629BB5] text-sm font-medium "
+        >
+          Ver todas las citas →
+        </a>
       </div>
     </section>
   );

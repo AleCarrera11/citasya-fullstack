@@ -5,9 +5,9 @@ import { ServiceGrid } from '../../components/services/ServiceGrid';
 import { NewService } from '../../components/services/NewService';
 import { EditService } from '../../components/services/EditService';
 import { DeleteService } from '../../components/services/DeleteService';
-import { ServiceFormField } from '../../components/InputField';
 import { VscAdd } from "react-icons/vsc";
 import { VscChromeClose } from "react-icons/vsc";
+import { ServiceFormField, SelectOption } from "@/components/InputField";
 
 interface SpecialtyData {
   id: number;
@@ -43,7 +43,6 @@ const Services: React.FC = () => {
 
   const API_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/admin`;
 
-  const statusOptions = ['Todos', 'Activo', 'Inactivo'];
 
   const handleOpenNewModal = () => setShowNewModal(true);
   const handleCloseNewModal = () => {
@@ -226,10 +225,17 @@ const Services: React.FC = () => {
     fetchServices();
   }, [fetchServices, fetchSpecialties]);
 
-  const specialtySelectOptions = [
+  // Opciones para los selects
+  const specialtySelectOptions: SelectOption<string>[] = [
     { value: '', label: 'Todos' },
     ...specialties.map(s => ({ value: s.id.toString(), label: s.name })),
     { value: 'manage_specialties', label: 'Añadir especialidad...' },
+  ];
+
+  const statusSelectOptions: SelectOption<string>[] = [
+    { value: '', label: 'Todos' },
+    { value: 'Activo', label: 'Activo' },
+    { value: 'Inactivo', label: 'Inactivo' },
   ];
 
   // Lógica de filtrado de servicios
@@ -240,50 +246,48 @@ const Services: React.FC = () => {
   });
 
   return (
-    <div className="relative w-full min-h-screen bg-neutral-100">
-      <main>
-        <h1 className="mx-0 mt-8 mb-14 text-4xl font-medium text-center text-yellow-700/60 max-sm:mx-0 max-sm:my-8 max-sm:text-3xl" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
-          Servicios
-        </h1>
-
-        <div className="flex items-center justify-between gap-25 mx-auto mb-14 w-fit max-md:flex-wrap max-md:gap-24 max-md:justify-center max-sm:flex-col max-sm:gap-5 max-sm:items-center">
-          <button
-            onClick={handleOpenNewModal}
-            className="relative cursor-pointer h-[50px] w-[201px] max-sm:h-[45px] max-sm:w-[180px]">
-            <div className="rounded-lg shadow-lg bg-yellow-700/60 size-full" />
-            <div className="absolute left-[24px] top-[13px]">
-              <VscAdd className="text-white size-6" />
-            </div>
-            <span className="absolute h-6 text-base font-bold leading-6 text-center text-white left-[54px] top-[13px] w-[133px] max-sm:text-sm max-sm:left-[45px] max-sm:top-[11px]" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              Nuevo Servicio
-            </span>
-          </button>
-
-          <section className="flex gap-20 w-fit max-md:flex-wrap max-md:gap-10 max-md:justify-center max-sm:flex-col max-sm:gap-5 max-sm:items-center">
-            <div className="w-[179px]">
+    <>
+      <main className="relative w-full min-h-screen px-30 max-md:px-8 max-sm:px-4 bg-[#F9FAFB]">
+          <h1 className="mx-0 mb-8 pt-8 text-4xl font-semibold text-center max-sm:mx-0 max-sm:my-8 max-sm:text-3xl" style={{ fontFamily: 'Roboto Condensed, sans-serif', color: "#447F98", }}>
+            Servicios
+          </h1>
+        {/* Nuevo diseño de filtros y botón */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-14 " style={{ fontFamily: 'Poppins, sans-serif'}}>
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            {/* Select de especialidad */}
+            <div className="w-full sm:w-50">
               <ServiceFormField
-                label="Especialidad:"
-                placeholder="Selecciona una especialidad"
+                placeholder="Selecciona una categoría"
+                label="Categoría"
                 options={specialtySelectOptions}
-                className="flex-1 grow shrink-0 basis-0 w-fit"
                 value={selectedSpecialty}
                 onChange={handleSpecialtyChange}
+                whiteBg
               />
             </div>
-
-            <div className="w-[179px]">
+            {/* Select de estado */}
+            <div className="w-full sm:w-50">
               <ServiceFormField
-                label="Estado:"
                 placeholder="Selecciona un estado"
-                options={statusOptions.map(option => ({ value: option === 'Todos' ? '' : option, label: option }))}
-                className="flex-1 grow shrink-0 basis-0 w-fit"
+                label="Estado"
+                options={statusSelectOptions}
                 value={selectedStatus}
                 onChange={handleStatusChange}
+                whiteBg
               />
             </div>
-          </section>
+          </div>
+          {/* Botón Nuevo Servicio */}
+          <button
+            onClick={handleOpenNewModal}
+            className="bg-[#447F98] hover:bg-[#629BB5] text-white text-sm py-2 px-4 rounded-md flex items-center"
+          >
+            <VscAdd className="h-5 w-5 mr-1" />
+            <span>Nuevo Servicio</span>
+          </button>
         </div>
 
+        {/* Grid de servicios */}
         <ServiceGrid
           services={filteredServices}
           loading={loadingServices}
@@ -318,15 +322,15 @@ const Services: React.FC = () => {
 
       {/* Modal para administrar especialidades */}
       {showManageSpecialtyModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-300/50 backdrop-blur-sm">
-          <div className="relative w-fit max-w-lg p-8 rounded-lg shadow-lg bg-neutral-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-300/50 backdrop-blur-sm" style={{ fontFamily: 'Poppins, sans-serif'}}>
+            <div className="relative w-fit max-w-3xl p-14 rounded-xl shadow-2xl bg-neutral-100">
             <button
               className="absolute top-2 right-2 text-2xl text-neutral-500 hover:text-neutral-900"
               onClick={handleCloseManageSpecialtyModal}
             >
-              <VscChromeClose className="text-neutral-600 hover:text-neutral-800 transition-colors duration-200" />
+              <VscChromeClose className="mr-4 mt-4 text-neutral-600 hover:text-neutral-800 transition-colors duration-200" />
             </button>
-            <h2 className="text-2xl font-bold mb-4 text-center text-yellow-700/60" style={{ fontFamily: 'Poppins, sans-serif' }}>
+            <h2 className="text-2xl font-medium mb-4 text-center text-[#447F98]" >
               Administrar Especialidades
             </h2>
             <div className="max-h-60 overflow-y-auto">
@@ -351,26 +355,26 @@ const Services: React.FC = () => {
                 <p className="text-center text-neutral-600">No hay especialidades añadidas.</p>
               )}
             </div>
-            <div className="mt-4 flex gap-2">
+            <div className="mt-4 flex gap-2 text-sm">
               <input
-                type="text"
-                className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-700/60"
-                value={newSpecialtyValue}
-                onChange={(e) => setNewSpecialtyValue(e.target.value)}
-                placeholder="Añadir nueva especialidad"
+              type="text"
+              className="flex-1 p-2 border border-[#447F98] rounded-md focus:outline-none focus:ring-1 focus:ring-[#447F98]"
+              value={newSpecialtyValue}
+              onChange={(e) => setNewSpecialtyValue(e.target.value)}
+              placeholder="Añadir nueva especialidad"
               />
               <button
-                type="button"
-                className="px-4 py-2 rounded-lg shadow-lg bg-yellow-700/60 text-white font-bold hover:bg-yellow-800/60 transition-colors"
-                onClick={handleAddSpecialty}
+              type="button"
+              className="px-4 py-2 rounded-lg shadow-lg bg-[#447F98] text-white font-bold hover:bg-[#629BB5] transition-colors"
+              onClick={handleAddSpecialty}
               >
-                Agregar
+              Agregar
               </button>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

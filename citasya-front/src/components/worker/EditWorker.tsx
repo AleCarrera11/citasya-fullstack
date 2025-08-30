@@ -92,7 +92,7 @@ export const EditWorker: React.FC<EditSpecialistProps> = ({
         <div className="flex flex-col py-9 w-full bg-neutral-100 rounded-[30px] shadow-lg">
           <div className="flex flex-row justify-between items-center w-full px-10">
             <div className="flex-1"></div>
-            <h1 className="text-4xl font-bold leading-none text-center text-yellow-700/60" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
+            <h1 className="text-4xl font-medium leading-none text-center text-[#447F98]" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
               Editar Perfil Especialista
             </h1>
             <button
@@ -156,7 +156,7 @@ export const EditWorker: React.FC<EditSpecialistProps> = ({
                 handleEditSpecialist();
               }}
               type="submit"
-              className="self-center px-11 py-5 mt-10 text-base font-bold text-white bg-yellow-700/60 rounded-[40px] hover:bg-yellow-700/80 transition-colors duration-200"
+              className="self-center px-11 py-5 mt-10 text-sm font-semibold text-white bg-[#447F98] rounded-[40px] hover:bg-[#629BB5] transition-colors duration-200"
               style={{ fontFamily: 'Poppins, sans-serif' }}
               disabled={loading}
             >
