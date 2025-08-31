@@ -24,6 +24,7 @@ interface ServiceFormFieldProps<T extends string | number> {
   readOnly?: boolean;
   whiteBg?: boolean;
   disabled?: boolean;
+  pattern?: string;
 }
 
 export const ServiceFormField = <T extends string | number>({
@@ -39,8 +40,9 @@ export const ServiceFormField = <T extends string | number>({
   readOnly = false,
   whiteBg = false,
   disabled = false,
+  pattern,
 }: ServiceFormFieldProps<T>) => {
-  const bgColorClass = whiteBg ? 'bg-white' : 'bg-green-200/40';
+  const bgColorClass = whiteBg ? 'bg-white' : 'bg-[#D6EBF3]/30';
 
   // Manejador de cambio para react-select
   const handleSelectChange = (
@@ -65,8 +67,8 @@ export const ServiceFormField = <T extends string | number>({
 
       return (
         <div className={`flex flex-col mt-4 ${className}`}>
-          <label className="text-base font-bold text-neutral-600">{label}</label>
-          <div className="px-5 pt-2 pb-4 mt-2 text-sm bg-white w-full rounded-lg max-md:pr-5 ">
+          <label className="text-sm font-medium text-neutral-600">{label}</label>
+          <div className="px-5 pt-2 pb-4 mt-2 text-sm bg-white w-full border-[#D6EBF3] rounded-lg max-md:pr-5 ">
             {displayValues || '-'}
           </div>
         </div>
@@ -74,8 +76,8 @@ export const ServiceFormField = <T extends string | number>({
     }
     return (
       <div className={`flex flex-col mt-4 ${className}`}>
-        <label className="text-base font-bold text-neutral-600">{label}</label>
-        <div className="px-5 pt-2 pb-4 mt-2 text-sm bg-white rounded-lg w-full max-md:pr-5 whitespace-pre-wrap">
+        <label className="text-sm font-medium text-neutral-600">{label}</label>
+        <div className="px-5 pt-2 pb-4 mt-2 text-sm bg-white rounded-lg border-[#D6EBF3] w-full max-md:pr-5 whitespace-pre-wrap">
           {String(value) || '-'}
         </div>
       </div>
@@ -83,11 +85,10 @@ export const ServiceFormField = <T extends string | number>({
   }
 
   return (
-    <div className={`flex flex-col mt-4 ${className}`}>
-      <label className="text-base font-bold text-neutral-600">
+    <div className={`flex flex-col ${className}`}>
+      <label className="text-sm font-sm text-neutral-600 mb-2">
         {label}
       </label>
-
       {options ? (
         multiple ? (
           <Select
@@ -101,48 +102,50 @@ export const ServiceFormField = <T extends string | number>({
             styles={{
               control: (base) => ({
                 ...base,
-                backgroundColor: whiteBg ? 'white' : 'rgba(187, 247, 208, 0.4)',
+                backgroundColor: whiteBg ? 'white' : 'rgba(214, 235, 243, 0.3)',
                 borderRadius: '0.5rem',
                 padding: '2px',
-                borderColor: 'transparent',
+                borderColor: '#447F98',
                 boxShadow: 'none',
                 minHeight: '42px',
-                ':hover': { borderColor: 'rgb(202 138 4 / 0.6)' }
+                fontSize: '0.85rem', // text-xs = 12px, reduce a 0.65rem (~10px)
+                ':hover': { borderColor: '#629BB5' }
               }),
               multiValue: (base) => ({
                 ...base,
-                backgroundColor: 'rgba(202, 138, 4, 0.15)',
+                backgroundColor: '#629BB5',
+                fontSize: '0.75rem', // reduce font size
               }),
               multiValueLabel: (base) => ({
                 ...base,
-                color: '#525252',
-                fontSize: '0.875rem'
+                color: 'white',
+                fontSize: '0.75rem' // reduce font size
               }),
               multiValueRemove: (base) => ({
                 ...base,
-                color: '#525252',
-                ':hover': { backgroundColor: '#f87171', color: 'white' }
+                color: 'white',
+                fontSize: '0.75rem', // reduce font size
+                ':hover': { backgroundColor: '#447F98', color: 'white' }
               }),
               placeholder: (base) => ({
                 ...base,
-                color: '#525252',
-                fontSize: '0.875rem'
+                color: 'text-neutral-400',
+                fontSize: '0.75rem' // reduce font size
               }),
               option: (base, state) => ({
                 ...base,
-                fontSize: '0.875rem',
-                color: '#525252',
+                fontSize: '0.75rem', // reduce font size
+                color: 'text-white',
                 backgroundColor: state.isFocused
-                  ? 'rgba(202, 138, 4, 0.15)'
+                  ? '#D6EBF3'
                   : 'transparent',
-                ':active': { backgroundColor: 'rgba(202, 138, 4, 0.25)' }
+                ':active': { backgroundColor: '#D6EBF3' }
               })
             }}
           />
         ) : (
           <select
-            className={`rounded-lg ${bgColorClass} p-3 mt-2 text-sm text-neutral-600
-              focus:outline-none focus:ring-2 focus:ring-yellow-700/60 transition-all duration-200`}
+            className={`rounded-lg ${bgColorClass} p-3 text-xs text-neutral-600 ring-1 ring-[#447F98] focus:outline-none transition-all duration-200`}
             value={String(value)} // Convierte el valor a string para el HTML select
             onChange={onChange as (e: ChangeEvent<HTMLSelectElement>) => void}
             name={name}
@@ -160,8 +163,8 @@ export const ServiceFormField = <T extends string | number>({
         )
       ) : type === 'textarea' ? (
         <textarea
-          className={`rounded-lg ${bgColorClass} p-3 mt-2 text-sm text-neutral-600
-            focus:outline-none focus:ring-2 focus:ring-yellow-700/60 transition-all duration-200`}
+          className={`rounded-lg ${bgColorClass} p-3 text-xs text-neutral-600
+            focus:outline-none focus:ring-2 focus:ring-[#447F98] transition-all duration-200`}
           placeholder={placeholder}
           rows={4}
           value={value as string}
@@ -169,16 +172,24 @@ export const ServiceFormField = <T extends string | number>({
           name={name}
           disabled={disabled}
         />
+      ) : type === 'date' ? (
+        <input
+          type="date"
+          className={`rounded-lg ${bgColorClass} p-3 text-xs text-neutral-600 border border-[#447F98]
+            focus:outline-none focus:ring-1 focus:ring-[#447F98] transition-all duration-200`}
+          placeholder={placeholder}
+        />
       ) : (
         <input
           type={type}
-          className={`rounded-lg ${bgColorClass} p-3 mt-2 text-sm text-neutral-600
-            focus:outline-none focus:ring-2 focus:ring-yellow-700/60 transition-all duration-200`}
+          className={`rounded-lg ${bgColorClass} p-3 text-xs text-neutral-600 border border-[#447F98]
+            focus:outline-none focus:ring-1 focus:ring-[#447F98] transition-all duration-200`}
           placeholder={placeholder}
           value={value as string}
           onChange={onChange as (e: ChangeEvent<HTMLInputElement>) => void}
           name={name}
           disabled={disabled}
+          pattern={pattern}
         />
       )}
     </div>

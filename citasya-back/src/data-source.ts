@@ -6,6 +6,7 @@ import { Service } from "./modules/services/service.model.js";
 import { Specialty } from "./modules/specialties/specialty.model.js";
 import { User } from "./modules/users/user.model.js";
 import { Worker } from "./modules/workers/worker.model.js";
+import { AgentMessage } from "./modules/agent-messages/agent-message.model.js";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -16,7 +17,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: true,
     logging: true,
-    entities: [User, Specialty, Client, Worker, Service, Appointment],
+    entities: [User, Specialty, Client, Worker, Service, Appointment, AgentMessage],
     migrations: [],
     subscribers: [],
 });

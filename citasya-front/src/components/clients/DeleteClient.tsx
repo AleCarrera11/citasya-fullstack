@@ -18,7 +18,7 @@ export const EliminarCliente: React.FC<EliminarClienteProps> = ({ onClose, onCon
 
           <div className="flex flex-row justify-between items-center w-full px-10 gap-6">
             <div className="flex-1"></div>
-            <h1 className="text-2xl font-bold leading-none text-center text-yellow-700/60" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
+            <h1 className="text-2xl font-medium leading-none text-center text-[#447F98]" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
               Eliminar Perfil Cliente
             </h1>
             <button
@@ -45,7 +45,7 @@ export const EliminarCliente: React.FC<EliminarClienteProps> = ({ onClose, onCon
             </button>
             <button
               onClick={onConfirm}
-              className="px-8 py-3 text-base font-bold text-white bg-red-500 rounded-[40px] hover:bg-red-600 transition-colors"
+              className="px-8 py-3 text-base font-bold bg-[#FEE2E2] text-[#B91C1C] rounded-[40px] hover:bg-[#FFC1C1] transition-colors"
               style={{ fontFamily: 'Poppins, sans-serif' }}
             >
               Eliminar

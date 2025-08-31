@@ -10,10 +10,10 @@ interface DeleteServiceProps {
 
 export const DeleteService: React.FC<DeleteServiceProps> = ({ onClose, onConfirm }) => {
   return (
-    <main className="max-w-[400px]">
+    <main className="max-w-[400px]" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <div className="flex flex-col py-9 px-8 w-full bg-neutral-100 rounded-[30px] shadow-lg max-md:max-w-full">
 
-        <header className="flex flex-col self-end max-w-full text-2xl font-bold leading-none text-center text-stone-400 w-[404px] max-md:mr-2.5">
+        <header className="flex flex-col self-end max-w-full text-2xl font-medium leading-none text-center text-stone-400 w-[404px] max-md:mr-2.5">
           <button
             onClick={onClose}
             aria-label="Cerrar modal"
@@ -21,7 +21,7 @@ export const DeleteService: React.FC<DeleteServiceProps> = ({ onClose, onConfirm
           >
             <VscChromeClose className="text-neutral-600 hover:text-neutral-800 transition-colors duration-200" />
           </button>
-          <h1 className="self-center text-yellow-700/60" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
+          <h1 className="self-center text-[#447F98]" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
             Eliminar Servicio
           </h1>
         </header>
@@ -35,15 +35,13 @@ export const DeleteService: React.FC<DeleteServiceProps> = ({ onClose, onConfirm
         <div className="flex justify-center gap-4">
           <button
             onClick={onClose}
-            className="flex flex-col justify-center px-8 py-3 text-base font-bold text-center text-neutral-600 whitespace-nowrap bg-neutral-300 rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] hover:bg-neutral-400 transition-colors duration-200"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
+            className="flex flex-col justify-center px-8 py-3 text-sm font-bold text-center text-neutral-600 whitespace-nowrap bg-neutral-300 rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] hover:bg-neutral-400 transition-colors duration-200"
           >
             <span>Cancelar</span>
           </button>
           <button
             onClick={onConfirm}
-            className="flex flex-col justify-center px-8 py-3 text-base font-bold text-center text-white whitespace-nowrap bg-red-500 rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] hover:bg-red-600 transition-colors duration-200"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
+            className="flex flex-col justify-center px-8 py-3 text-sm font-bold text-center text-[#B91C1C] whitespace-nowrap bg-[#FEE2E2] rounded-[40px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] hover:bg-[#FFC1C1] transition-colors duration-200"
           >
             <span>Eliminar</span>
           </button>
