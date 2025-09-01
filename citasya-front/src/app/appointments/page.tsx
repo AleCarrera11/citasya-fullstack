@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ServiceFormField } from '../../components/InputField';
 import { AppointmentsTable } from '../../components/appointments/AppointmentsTable';
-import { VscAdd } from "react-icons/vsc";
+import { VscAdd, VscRefresh } from "react-icons/vsc";
 import { NewAppointment } from '../../components/appointments/NewAppointment';
 
 interface Client {
@@ -47,6 +47,7 @@ const Appointments: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [workersForFilter, setWorkersForFilter] = useState<{ label: string; value: string; }[]>([]);
   const [servicesForFilter, setServicesForFilter] = useState<{ label: string; value: string; }[]>([]);
+  const [date, setDate] = useState('');
 
   const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -133,8 +134,10 @@ const Appointments: React.FC = () => {
     const serviceMatch = selectedService === '' || appointment.service.name.toLowerCase() === selectedService.toLowerCase();
     // Filtro por término de búsqueda (cliente)
     const searchMatch = searchTerm === '' || appointment.client.name.toLowerCase().includes(searchTerm.toLowerCase());
+    // Filtro por fecha
+    const dateMatch = date === '' || appointment.date === date;
 
-    return statusMatch && especialistaMatch && serviceMatch && searchMatch;
+    return statusMatch && especialistaMatch && serviceMatch && searchMatch && dateMatch;
   });
 
   const handleOpenNewModal = () => setShowNewModal(true);
@@ -167,120 +170,141 @@ const Appointments: React.FC = () => {
 
   const googleCalendarEmbedUrl = process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_URL;
 
-  return (
-    <div className="z-0 relative w-full min-h-screen bg-neutral-100">
-      <main className="container pl-30 pr-30 mx-auto max-md:px-5 max-sm:px-2.5">
-        <h1 className="mx-0 mt-8 mb-5 text-4xl font-medium text-center text-yellow-700/60 max-sm:mx-0 max-sm:my-8 max-sm:text-3xl" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
-          Gestión de Citas
-        </h1>
+  // Handler para el cambio de fecha
+  const handleDateChange = (
+    e:
+      | React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
+      | { target: { name?: string; value: string | string[] } }
+  ) => {
+    if ("target" in e && typeof e.target.value !== "undefined") {
+      if (Array.isArray(e.target.value)) {
+        setDate(e.target.value[0]);
+      } else {
+        setDate(e.target.value);
+      }
+    }
+  };
 
-        <div className="flex justify-between items-center mb-5">
-            <h2 className="mx-0 text-3xl font-medium text-yellow-700/60 max-sm:text-2xl" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
-              Calendario de Citas
-            </h2>
-            <button
-                onClick={fetchData} 
-                className="px-4 py-2 rounded-lg shadow-lg bg-yellow-700/60 text-white font-bold text-sm hover:bg-yellow-700/80 transition-colors"
-            >
-              Refrescar datos
-            </button>
+  return (
+    <>
+      <main className="container pl-30 pr-30 mx-auto max-md:px-5 max-sm:px-2.5 bg-[#F9FAFB] pt-8"  style={{ fontFamily: 'Poppins, sans-serif'}}>
+        <div className= "bg-white p-10 rounded-lg shadow">
+          <div className="flex justify-between items-center mb-5">
+              <h2 className="mx-0 text-2xl font-medium text-[#447F98] max-sm:text-2xl">
+                Calendario
+              </h2>
+              <button
+                  onClick={fetchData} 
+                  className="flex gap-2 justify-between px-4 py-2 rounded-lg bg-[#D6EBF3] text-[#447F98] font-semibold text-sm hover:bg-[#B9D8E1] transition-colors"
+              >
+                <VscRefresh className='text-[#447F98] text-lg'/>
+                Refrescar datos
+              </button>
+          </div>
+
+          {loading && <p className="text-center text-gray-500">Cargando calendario...</p>}
+          {error && <p className="text-center text-red-500">Error: {error}</p>}
+
+          {!loading && !error && (
+              <div className="w-full mb-8" style={{ height: '700px' }}>
+                  <iframe
+                      src={googleCalendarEmbedUrl}
+                      style={{ border: '0', width: '100%', height: '100%' }}
+                      frameBorder="0"
+                      scrolling="no"
+                      title="Google Calendar"
+                  />
+              </div>
+          )}  
         </div>
 
-        {loading && <p className="text-center text-gray-500">Cargando calendario...</p>}
-        {error && <p className="text-center text-red-500">Error: {error}</p>}
-
-        {!loading && !error && (
-            <div className="w-full mb-8" style={{ height: '700px' }}>
-                <iframe
-                    src={googleCalendarEmbedUrl}
-                    style={{ border: '0', width: '100%', height: '100%' }}
-                    frameBorder="0"
-                    scrolling="no"
-                    title="Google Calendar"
-                />
-            </div>
-        )}
-
-        <div className="flex justify-start items-center mb-5">
-            <h2 className="mx-0 text-3xl font-medium text-yellow-700/60 max-sm:text-2xl" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
+        <div className= "bg-white p-10 rounded-lg shadow mt-8">
+          <div className="flex justify-between items-center">
+            <h2 className="mx-0 text-2xl font-medium text-[#447F98] max-sm:text-2xl">
               Historial de Citas
             </h2>
-        </div>
-        
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <div className="flex flex-wrap items-center gap-10 max-md:justify-center">
-            <div className="w-[179px]">
-              <ServiceFormField
-                label="Estado cita:"
-                placeholder="Selecciona un estado"
-                options={appointmentStatusOptions}
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(Array.isArray(e.target.value) ? e.target.value[0] : e.target.value)}
-              />
-            </div>
-            <div className="w-[179px]">
-              <ServiceFormField
-                label="Especialista:"
-                placeholder="Selecciona un especialista"
-                options={workersForFilter} 
-                value={selectedEspecialista}
-                onChange={(e) => setSelectedEspecialista(Array.isArray(e.target.value) ? e.target.value[0] : e.target.value)}
-              />
-            </div>
-            <div className="w-[179px]">
-              <ServiceFormField
-                label="Servicio:"
-                placeholder="Selecciona un servicio"
-                options={servicesForFilter}
-                value={selectedService}
-                onChange={(e) => setSelectedService(Array.isArray(e.target.value) ? e.target.value[0] : e.target.value)}
-              />
-            </div>
-            <div className="relative w-[250px] mt-4 ml-15">
-              <input
-                type="text"
-                placeholder="Buscar por cliente"
-                className="w-full rounded-lg bg-green-200/40 p-3 pl-10 text-sm text-neutral-600 focus:outline-none focus:ring-2 focus:ring-yellow-700/60 transition-all duration-200"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-              </svg>
-            </div>
+              <button
+                onClick={handleOpenNewModal}
+                className="bg-[#447F98] hover:bg-[#629BB5] text-sm text-white py-2 px-4 gap-2 rounded-md flex items-center whitespace-nowrap"
+              >
+              <VscAdd className="h-5 w-5 mr-1" />
+              <span>Nueva Cita</span>
+              </button>
           </div>
-          <button
-            onClick={handleOpenNewModal}
-            className="relative cursor-pointer h-[50px] w-[201px] max-sm:h-[45px] max-sm:w-[180px]">
-            <div className="rounded-lg shadow-lg bg-yellow-700/60 size-full" />
-            <div className="absolute left-[24px] top-[13px]">
-              <VscAdd className="text-white size-6" />
+
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+            <div className="flex flex-wrap items-center gap-6 max-md:justify-center mt-4">
+              <div className="w-[190px]">
+                <ServiceFormField
+                  label="Estado cita:"
+                  placeholder="Selecciona un estado"
+                  options={appointmentStatusOptions}
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(Array.isArray(e.target.value) ? e.target.value[0] : e.target.value)}
+                />
+              </div>
+              <div className="w-[210px]">
+                <ServiceFormField
+                  label="Especialista:"
+                  placeholder="Selecciona un especialista"
+                  options={workersForFilter} 
+                  value={selectedEspecialista}
+                  onChange={(e) => setSelectedEspecialista(Array.isArray(e.target.value) ? e.target.value[0] : e.target.value)}
+                />
+              </div>
+              <div className="w-[190px]">
+                <ServiceFormField
+                  label="Servicio:"
+                  placeholder="Selecciona un servicio"
+                  options={servicesForFilter}
+                  value={selectedService}
+                  onChange={(e) => setSelectedService(Array.isArray(e.target.value) ? e.target.value[0] : e.target.value)}
+                />
+              </div>
+              <div className="w-[190px]">
+                <ServiceFormField
+                  label="Fecha:"
+                  placeholder="Selecciona una fecha"
+                  type="date"
+                  name="date"
+                  value={date}
+                  onChange={handleDateChange}
+                  className="gap-2"
+                />
+              </div>
+              <div className="relative w-[250px] mt-7 ml-15 text-neutral-600">
+                <ServiceFormField
+                  type="text"
+                  placeholder="Buscar por cliente"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(Array.isArray(e.target.value) ? e.target.value[0] : e.target.value)} 
+                  label=""
+                  className="rounded-lg text-neutral-600" 
+                />
+              </div>
             </div>
-            <span className="absolute h-6 text-base font-bold leading-6 text-center text-white left-[54px] top-[13px] w-[133px] max-sm:text-sm max-sm:left-[45px] max-sm:top-[11px]" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              Nueva cita
-            </span>
-          </button>
+
+          </div>
+
+          {loading && <p className="text-center text-gray-500">Cargando tabla de citas...</p>}
+          {error && <p className="text-center text-red-500">Error: {error}</p>}
+
+          {!loading && !error && (
+              <AppointmentsTable
+                  appointments={filteredAppointments.map(a => ({
+                    id: a.id.toString(),
+                    status: a.status, 
+                    service: a.service.name,
+                    date: a.date,
+                    time: a.hour,
+                    clientName: a.client.name,
+                    professional: a.worker.name, 
+                  }))}
+                  onUpdateStatus={handleUpdateStatus}
+              />
+          )}
         </div>
-
-        {loading && <p className="text-center text-gray-500">Cargando tabla de citas...</p>}
-        {error && <p className="text-center text-red-500">Error: {error}</p>}
-
-        {!loading && !error && (
-            <AppointmentsTable
-                appointments={filteredAppointments.map(a => ({
-                  id: a.id.toString(),
-                  status: a.status, 
-                  service: a.service.name,
-                  date: a.date,
-                  time: a.hour,
-                  clientName: a.client.name,
-                  professional: a.worker.name, 
-                }))}
-                onUpdateStatus={handleUpdateStatus}
-            />
-        )}
-
-        <div className="mb-50" />
+        <div className="pb-15" />
       </main>
 
       {/* Renderizado condicional del modal de nuevo servicio */}
@@ -289,7 +313,7 @@ const Appointments: React.FC = () => {
             <NewAppointment onClose={handleCloseNewModal} />
           </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -1,11 +1,13 @@
 "use client";
-import { CalendarPlus } from "lucide-react";
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { VscAdd, VscSearch } from "react-icons/vsc";
+import { VscAdd } from "react-icons/vsc";
 import { NuevoCliente } from "./NewClient";
-import {NewAppointment} from "../appointments/NewAppointment";
+import { NewAppointment } from "../appointments/NewAppointment";
 import ClientProfile from "./ClientProfile";
+import { ServiceFormField } from "@/components/InputField";
+import { UserIcon } from "lucide-react";
+import { CalendarPlus } from "lucide-react";
 
 interface Client {
   id: number;
@@ -29,7 +31,6 @@ export function ClientDirectory() {
   // Estados para los inputs de búsqueda
   const [searchNameOrCedula, setSearchNameOrCedula] = useState("");
   const [searchPhone, setSearchPhone] = useState("");
-
 
   const fetchClients = async () => {
     try {
@@ -83,12 +84,12 @@ export function ClientDirectory() {
   });
 
   const handleOpenNewClientModal = () => setShowNewClientModal(true);
-  
+
   const handleCloseNewClientModal = () => {
     setShowNewClientModal(false);
-    fetchClients(); 
+    fetchClients();
   };
-  
+
   const handleOpenNewAppointmentModal = (client?: Client) => {
     if (client) {
       setAppointmentClient(client);
@@ -97,100 +98,123 @@ export function ClientDirectory() {
   };
   const handleCloseNewAppointmentModal = () => setShowNewAppointmentModal(false);
 
-
   const handleCloseProfile = () => {
     setSelectedClient(null);
-    fetchClients(); 
+    fetchClients();
   };
 
   return (
-    <div className="relative flex w-full overflow-hidden">
+    <div className="relative flex w-full h-screen" style={{ fontFamily: 'Poppins, sans-serif'}}>
       <main
         className={`transition-all duration-500 transform ${
-          selectedClient
-            ? "translate-x-0 w-[68%] mr-auto"
-            : "mx-auto w-[70%]"
+          selectedClient ? "translate-x-0 w-[68%] mr-auto" : "mx-auto w-[70%]"
         }`}
       >
-        <div className="px-16 pt-12 mx-auto w-full rounded-3xl bg-green-200/40 pb-[602px]">
-          <div className="flex flex-wrap gap-4 w-full text-sm text-neutral-600 justify-between items-center">
-            <div className="flex gap-3 px-2 py-3 tracking-normal bg-white rounded-lg">
-              <VscSearch className="h-5 w-4 text-neutral-500" />
-              <input
-                type="text"
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+          <div className="flex flex-col md:flex-row gap-4 mb-4 justify-center items-center p-5">
+            <div className="w-full md:w-1/2 mt-0">
+              <ServiceFormField
+                label=""
                 placeholder="Nombre o Cédula"
-                className="my-auto bg-transparent outline-none"
                 value={searchNameOrCedula}
-                onChange={(e) => setSearchNameOrCedula(e.target.value)}
-              />
-            </div>
-            <div className="flex gap-2 items-start px-5 py-3 tracking-normal whitespace-nowrap bg-white rounded-lg">
-              <VscSearch className="h-5 w-4 text-neutral-500" />
-              <input
+                onChange={(e) => setSearchNameOrCedula(typeof e.target.value === "string" ? e.target.value : e.target.value[0] || "")}
                 type="text"
-                placeholder="Teléfono"
-                className="my-auto bg-transparent outline-none"
-                value={searchPhone}
-                onChange={(e) => setSearchPhone(e.target.value)}
+                whiteBg
+                className="rounded-lg"
               />
             </div>
-            <button
-              onClick={handleOpenNewClientModal}
-              className="flex gap-1.5 px-3 py-3.5 my-auto items-center text-base font-semibold text-center text-white rounded-lg bg-yellow-700/60 hover:bg-stone-500 transition-colors"
-            >
-              <VscAdd className="h-5 w-4" />
+            <div className="w-full md:w-1/2">
+              <ServiceFormField
+                label=""
+                placeholder="Teléfono"
+                value={searchPhone}
+                onChange={(e) => setSearchPhone(typeof e.target.value === "string" ? e.target.value : e.target.value[0] || "")}
+                type="text"
+                whiteBg
+                className="rounded-lg"
+              />
+            </div>
+            <div>
+              <button
+                onClick={handleOpenNewClientModal}
+                className="bg-[#447F98] hover:bg-[#629BB5] p-3 mt-2 text-xs text-white rounded-md flex items-center whitespace-nowrap"
+              >
+              <VscAdd className="h-5 w-5 mr-1" />
               <span>Nuevo Cliente</span>
-            </button>
+              </button>
+            </div>
           </div>
 
           {/* Estado de carga y error */}
           {loading && <div className="p-5 text-center">Cargando clientes...</div>}
           {error && <div className="p-5 text-center text-red-500">{error}</div>}
-
           {!loading && !error && (
-            <div className="overflow-hidden mt-20 w-full bg-white rounded-lg ">
-              <div className="flex font-bold text-center text-neutral-600">
-                <div className="flex-1 p-3">Cédula</div>
-                <div className="flex-1 p-3">Nombre</div>
-                <div className="flex-1 p-3">Teléfono</div>
-                <div className="flex-1 p-3">Acciones</div>
-              </div>
-
-              {filteredClients.length > 0 ? (
-                filteredClients.map((client) => (
-                  <div
-                    key={client.id} 
-                    className="flex text-center text-neutral-600 border-t-[2px] border-yellow-700/60"
-                  >
-                    <div className="flex-1 p-3 justify-center">{client.cedula}</div>
-                    <div className="flex-1 p-3 justify-center">{client.nombre}</div>
-                    <div className="flex-1 p-3 justify-center">{client.telefono}</div>
-                    <div className="flex gap-2 p-2 justify-center">
-                      <button
-                        onClick={() => {
-                          if (selectedClient?.id === client.id) {
-                            setSelectedClient(null);
-                          } else {
-                            setSelectedClient(client);
-                          }
-                        }}
-                        className="p-2 bg-green-300/80 rounded-lg text-[10px] font-bold text-white hover:bg-green-400"
-                      >
-                        Ver Perfil
-                      </button>
-                      <button
-                        onClick={() => handleOpenNewAppointmentModal(client)}
-                        className="flex gap-1 p-2 bg-green-300/80 rounded-lg text-[10px] font-bold text-white hover:bg-green-400"
-                      >
-                        <CalendarPlus className="w-4 h-4" />
-                        Nueva Cita
-                      </button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-5 text-center text-neutral-600">No hay clientes que coincidan.</div>
-              )}
+            <div className="overflow-x-auto rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200 p-5 rounded-lg">
+                <thead className="bg-neutral-100">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      Cédula
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      Nombre
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      Teléfono
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200 rounded-lg ">
+                  {filteredClients.length > 0 ? (
+                    filteredClients.map((client) => (
+                      <tr key={client.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-xs text-neutral-600">
+                          {client.cedula}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-neutral-600">
+                          {client.nombre}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xs text-neutral-600">
+                          {client.telefono}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xs text-neutral-600">
+                          <div className="flex space-x-2">
+                            <button
+                              className="text-[#447F98] hover:text-[#629BB5] bg-[#D6EBF3] p-1.5 rounded-md flex items-center gap-1"
+                              onClick={() => {
+                              if (selectedClient?.id === client.id) {
+                                setSelectedClient(null);
+                              } else {
+                                setSelectedClient(client);
+                              }
+                              }}
+                            >
+                              <UserIcon className="h-4 w-4" />
+                              <span>Ver Perfil</span>
+                            </button>
+                            <button
+                              className="text-[#447F98] hover:text-[#629BB5] bg-[#D6EBF3] p-1.5 rounded-md flex items-center gap-1"
+                              onClick={() => handleOpenNewAppointmentModal(client)}
+                            >
+                              <CalendarPlus className="h-4 w-4" />
+                              <span>Agendar Cita</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="p-5 text-center text-neutral-600">
+                        No hay clientes que coincidan.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           )}
         </div>

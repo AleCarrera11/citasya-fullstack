@@ -11,13 +11,13 @@ interface DeleteSpecialistProps {
 
 export const DeleteSpecialist: React.FC<DeleteSpecialistProps> = ({ onClose, onConfirm }) => {
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" style={{ fontFamily: 'Poppins, sans-serif'}}>
       <main className="max-w-[400px] w-full">
         <div className="flex flex-col py-9 px-8 w-full bg-neutral-100 rounded-[30px] shadow-lg">
           
           <div className="flex flex-row justify-between items-center w-full px-10 gap-6">
             <div className="flex-1"></div>
-            <h1 className="text-2xl font-bold leading-none text-center text-yellow-700/60" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
+            <h1 className="text-2xl font-medium leading-none text-center text-[#447F98]" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
               Eliminar Perfil Especialista
             </h1>
             <button
@@ -44,7 +44,7 @@ export const DeleteSpecialist: React.FC<DeleteSpecialistProps> = ({ onClose, onC
             </button>
             <button
               onClick={onConfirm}
-              className="px-8 py-3 text-base font-bold text-white bg-red-500 rounded-[40px] hover:bg-red-600 transition-colors"
+              className="px-8 py-3 text-base font-bold bg-[#FEE2E2] text-[#B91C1C] rounded-[40px] hover:bg-[#FFC1C1] transition-colors"
               style={{ fontFamily: 'Poppins, sans-serif' }}
             >
               Eliminar

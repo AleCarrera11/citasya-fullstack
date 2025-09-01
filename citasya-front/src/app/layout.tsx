@@ -27,9 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${poppins.variable} ${roboto_condensed.variable}`}>
-      <body className="bg-neutral-100">
+      <body>
         <Header />
-        <div className="pt-8">
+        <div>
           {children}
         </div>
       </body>

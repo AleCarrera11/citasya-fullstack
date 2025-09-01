@@ -83,8 +83,11 @@ export class AppointmentsService {
                 }
     
                 // 3. Crear y guardar la cita en la base de datos
+                const [year, month, day] = data.date.split('-').map(Number);
+                const localDate = new Date(year, month - 1, day);
+
                 const appointment = this.appointmentRepository.create({
-                    date: new Date(data.date),
+                    date: localDate,
                     hour: data.hour,
                     status: AppointmentStatus.Pendiente,
                     client,

@@ -1,15 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { VscAccount } from "react-icons/vsc";
 
-
-const poppinsFontUrl = "https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap";
-const robotoCondensedFontUrl = "https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap";
-
+// Todos los textos usan la fuente Poppins
 export const Header: React.FC = () => {
-  const [activePath, setActivePath] = useState('/');
+  const pathname = usePathname();
 
   // Array de links para la navegación
   const navLinks = [
@@ -19,64 +17,47 @@ export const Header: React.FC = () => {
     { name: 'ESPECIALISTAS', href: '/workers' },
   ];
 
-  useEffect(() => {
-    const poppinsLink = document.createElement('link');
-    poppinsLink.href = poppinsFontUrl;
-    poppinsLink.rel = 'stylesheet';
-    document.head.appendChild(poppinsLink);
-
-    const robotoCondensedLink = document.createElement('link');
-    robotoCondensedLink.href = robotoCondensedFontUrl;
-    robotoCondensedLink.rel = 'stylesheet';
-    document.head.appendChild(robotoCondensedLink);
-
-    return () => {
-      document.head.removeChild(poppinsLink);
-      document.head.removeChild(robotoCondensedLink);
-    };
-  }, []);
-
   return (
-    <>
-      <header className="z-10 flex items-center justify-between px-20 py-0 w-full shadow-lg bg-neutral-100 h-[117px] max-md:flex-wrap max-md:px-10 max-sm:flex-col max-sm:gap-4 max-sm:items-start max-sm:p-5 max-sm:h-auto">
-        <div className="flex items-center gap-50 max-md:gap-5 max-sm:flex-wrap max-sm:gap-4">
-            <Link href="/" className="mr-auto text-3xl font-bold text-neutral-600 max-sm:text-2xl" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              CitasYa
-            </Link>
-            
-        </div>
+    <header className="flex shrink-0 justify-center items-center px-20 pt-0 pb-px w-full bg-white rounded-md shadow-md h-[69px] max-md:px-8 max-md:pt-0 max-md:pb-px max-sm:px-4 max-sm:pt-0 max-sm:pb-px" style={{ boxShadow: '0 2px 12px 0 rgba(68, 127, 152, 0.08)' }}>
+      <div className="flex shrink-0 justify-between items-center py-4 w-full max-w-screen-xl h-[68px] max-md:px-0 max-md:py-4">
+        {/* Logo */}
+        <Link href="/" className="flex shrink-0 justify-start items-start w-20 h-8">
+          <div className="flex shrink-0 justify-center items-center h-8 w-[75px]">
+            <h1 className="shrink-0 h-8 text-2xl font-bold leading-8 text-slate-300 w-[55px]" style={{ color: "#B9D8E1", fontFamily: 'Poppins, sans-serif'}}>
+              Citas
+            </h1>
+          </div>
+          <div className="flex flex-col shrink-0 justify-center items-center h-8 w-[25px]">
+            <span className="shrink-0 h-8 text-2xl font-bold leading-8 text-slate-500 w-[25px]" style={{ color: "#447F98", fontFamily: 'Poppins, sans-serif' }}>
+              Ya
+            </span>
+          </div>
+        </Link>
 
-        <div className="flex items-center gap-12  max-sm:flex-col  max-sm:items-start">
-          <nav className="flex items-center gap-12 max-md:gap-5 max-sm:flex-wrap max-sm:gap-4">
-            {navLinks.map((link) => {
-              const isActive = activePath === link.href;
-              return (
-                <a key={link.name} href={link.href} onClick={() => setActivePath(link.href)} className="flex relative flex-col items-center group">
-                  <span className={`text-xl font-bold text-stone-600 max-sm:text-base ${isActive ? 'text-green-500' : ''}`} style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>
-                    {link.name}
+        {/* Navegación */}
+        <nav className="flex shrink-0 gap-1 justify-end items-center h-9 w-[431px] max-md:gap-2 max-md:w-auto max-sm:hidden">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link key={link.name} href={link.href} className="flex relative flex-col items-center group">
+                <button
+                  className={`flex shrink-0 justify-center items-center px-4 pt-2 pb-2.5 rounded-md max-md:px-3 max-md:pt-1.5 max-md:pb-2
+                  ${isActive ? '' : ''}
+                  `}
+                  style={isActive ? { background: '#D6EBF3' } : undefined}
+                >
+                  <span className={`shrink-0 text-base font-medium leading-6 ${isActive ? 'text-primary' : ''} max-md:text-base`} style={{ background: isActive ? '#D6EBF3' : undefined, color: "#447F98", fontFamily: 'Poppins, sans-serif' }}>
+                  {link.name}
                   </span>
-                  <div
-                    className={`h-[3px] mt-1 rounded-sm transition-all duration-300 ${
-                      isActive ? 'bg-green-300 w-full' : 'bg-transparent w-0 group-hover:w-full group-hover:bg-green-200'
-                    }`}
-                  />
-                </a>
-              );
-            })}
-          </nav>
-
-            <Link href="/profile" className="ml-12 max-md:ml-5">
-            <button
-              type="button"
-              className="focus:outline-none"
-              aria-label="Ir al perfil"
-              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-            >
-              <VscAccount className="size-9 text-green-300/80 hover:text-yellow-700/60 transition-colors duration-200" />
-            </button>
-            </Link>
-        </div>
-      </header>
-    </>
+                </button>
+              </Link>
+            );
+          })}
+          <Link href="/profile" className="flex shrink-0 justify-center items-center w-9 h-9 ml-2">
+            <VscAccount className="size-9 hover:text-primary/20 transition-colors duration-200 rounded-2xl " style={{  background: pathname === '/profile' ? '#D6EBF3' : undefined, color: "#447F98" }} />
+          </Link>
+        </nav>
+      </div>
+    </header>
   );
 };
