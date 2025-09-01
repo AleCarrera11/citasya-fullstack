@@ -12,13 +12,14 @@ interface NewAppointmentProps {
 
 export const NewAppointment: React.FC<NewAppointmentProps> = ({ onClose, initialDocumentId }) => {
   const [formData, setFormData] = useState({
-    clientDocumentId: '',
+    clientDocumentId: initialDocumentId || '',
     specialtyId: '',
     serviceId: '',
     workerId: '',
     date: '',
     hour: '',
   });
+
 
   const [availableSpecialties, setAvailableSpecialties] = useState<SelectOption<string>[]>([]);
   const [availableServices, setAvailableServices] = useState<SelectOption<string>[]>([]);
@@ -135,13 +136,14 @@ export const NewAppointment: React.FC<NewAppointmentProps> = ({ onClose, initial
     if (name) {
       setFormData(prev => {
         const newFormData = { ...prev, [name]: typeof value === 'string' ? value : value[0] };
-        
+
         if (name === 'specialtyId') {
           newFormData.serviceId = '';
           newFormData.workerId = '';
         } else if (name === 'serviceId') {
           newFormData.workerId = '';
         }
+
         return newFormData;
       });
     }
@@ -151,6 +153,15 @@ export const NewAppointment: React.FC<NewAppointmentProps> = ({ onClose, initial
     setLoading(true);
     setError(null);
     try {
+      const serviceId = parseInt(formData.serviceId);
+      const workerId = parseInt(formData.workerId);
+
+      if (!formData.clientDocumentId || isNaN(serviceId) || isNaN(workerId) || !formData.date || !formData.hour) {
+        setError("Faltan datos obligatorios");
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch(`${API_URL}/appointments`, {
         method: 'POST',
         headers: {

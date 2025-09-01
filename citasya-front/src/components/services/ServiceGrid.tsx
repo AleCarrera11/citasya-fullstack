@@ -1,24 +1,10 @@
 'use client';
 import React from 'react';
-import { CiEdit, CiClock1 } from 'react-icons/ci';
+import { CiClock1 } from 'react-icons/ci';
 import { MdOutlineCurrencyExchange } from 'react-icons/md';
 import { TbCategory } from 'react-icons/tb';
 import { VscChromeClose, VscEdit, VscPulse } from 'react-icons/vsc';
-
-interface SpecialtyData {
-  id: number;
-  name: string;
-}
-
-interface ServiceData {
-  id: string;
-  name: string;
-  specialty: SpecialtyData; 
-  description: string;
-  minutes_duration: number;
-  price: number;
-  status: string;
-}
+import { ServiceData } from '../../types/service';
 
 interface ServiceGridProps {
   services: ServiceData[];

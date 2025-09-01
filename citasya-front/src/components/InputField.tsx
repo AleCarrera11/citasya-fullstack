@@ -178,6 +178,10 @@ export const ServiceFormField = <T extends string | number>({
           className={`rounded-lg ${bgColorClass} p-3 text-xs text-neutral-600 border border-[#447F98]
             focus:outline-none focus:ring-1 focus:ring-[#447F98] transition-all duration-200`}
           placeholder={placeholder}
+          value={value as string}
+          onChange={onChange as (e: ChangeEvent<HTMLInputElement>) => void}
+          name={name}
+          disabled={disabled}
         />
       ) : (
         <input

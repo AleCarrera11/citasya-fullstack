@@ -1,16 +1,17 @@
 import React from 'react'
 import { CheckIcon, ClockIcon, XIcon } from 'lucide-react'
+
 interface StatsCardProps {
   title: string
   value: number
   variant: 'confirmed' | 'pending' | 'cancelled'
   percentChange?: string
 }
+
 export const StatsCard: React.FC<StatsCardProps> = ({
   title,
   value,
   variant,
-  percentChange,
 }) => {
   const getCardStyles = () => {
     return 'bg-[#D6EBF3] text-[#447F98]'

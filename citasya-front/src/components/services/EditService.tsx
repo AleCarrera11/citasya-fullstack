@@ -3,21 +3,8 @@
 import React, { useState } from 'react';
 import { VscChromeClose } from "react-icons/vsc";
 import { ServiceFormField } from '../InputField';
+import { SpecialtyData, ServiceData } from '../../types/service';
 
-interface SpecialtyData {
-  id: number;
-  name: string;
-}
-
-interface ServiceData {
-  id: string;
-  name: string;
-  specialty: SpecialtyData;
-  description: string;
-  minutes_duration: number;
-  price: number;
-  status: string;
-}
 
 interface EditServiceProps {
   onClose: () => void;
