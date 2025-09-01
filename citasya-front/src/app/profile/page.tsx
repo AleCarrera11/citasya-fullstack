@@ -223,10 +223,9 @@ function Profile() {
     return (
         <div className="relative w-full min-h-screen bg-neutral-100 flex flex-col items-center pb-72 max-md:pb-24">
             <main className="flex flex-col items-center w-full max-w-5xl px-5">
-                <h1 className="mt-8 text-4xl font-medium text-yellow-700/60 max-md:mt-10 max-md:text-3xl" style={{ fontFamily: "Roboto Condensed, sans-serif" }}>
-                    Configuración del centro
+                <h1 className="mt-8 text-3xl font-medium text-[#447F98] max-md:mt-10 max-md:text-3xl" style={{ fontFamily: "Roboto Condensed, sans-serif" }}>
+                    Perfil de Usuario
                 </h1>
-                <CenterDataForm />
             </main>
         </div>
     );

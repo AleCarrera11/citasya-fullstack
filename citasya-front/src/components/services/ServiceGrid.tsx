@@ -1,24 +1,10 @@
 'use client';
 import React from 'react';
-import { CiEdit, CiClock1 } from 'react-icons/ci';
+import { CiClock1 } from 'react-icons/ci';
 import { MdOutlineCurrencyExchange } from 'react-icons/md';
 import { TbCategory } from 'react-icons/tb';
-import { VscChromeClose } from 'react-icons/vsc';
-
-interface SpecialtyData {
-  id: number;
-  name: string;
-}
-
-interface ServiceData {
-  id: string;
-  name: string;
-  specialty: SpecialtyData; 
-  description: string;
-  minutes_duration: number;
-  price: number;
-  status: string;
-}
+import { VscChromeClose, VscEdit, VscPulse } from 'react-icons/vsc';
+import { ServiceData } from '../../types/service';
 
 interface ServiceGridProps {
   services: ServiceData[];
@@ -48,61 +34,65 @@ export const ServiceGrid: React.FC<ServiceGridProps> = ({
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-10 w-full max-w-7xl">
+    <div className="flex flex-col items-center " style={{ fontFamily: 'Poppins, sans-serif'}}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 w-full max-w-7xl">
         {services.map((service) => (
           <div
             key={service.id}
-            className="relative flex flex-col p-12 bg-green-300/20 rounded-[30px] shadow-lg max-md:p-4"
+            className="bg-white rounded-lg shadow-md p-8 relative"
           >
-            <button
-              onClick={() => onEditService(service)}
-              className="absolute top-6 right-16 text-yellow-700/60 hover:text-yellow-700 transition-colors"
-            >
-              <CiEdit size={24} />
-            </button>
-            <button
-              onClick={() => onDeleteService(service.id)}
-              className="absolute top-6 right-6 text-yellow-700/60 hover:text-red-500 transition-colors"
-            >
-              <VscChromeClose className="size-5" />
-            </button>
-
-            <h2
-              className="text-3xl items-center font-bold text-yellow-700/60 leading-tight"
-              style={{ fontFamily: 'Roboto Condensed, sans-serif' }}
-            >
-              {service.name}
-            </h2>
-
-            <div className="flex items-center mt-2 text-neutral-500 text-m font-bold">
-              <TbCategory className="mr-2" />
-              <span>{service.specialty.name}</span>
+            <div className="flex justify-between items-start mb-5">
+              <div>
+                <h3 className="text-[#447F98] font-medium text-xl">{service.name}</h3>
+                <div className="flex items-center text-xs text-gray-500 mt-1">
+                  <TbCategory className="mr-2" />
+                  <span>{service.specialty.name}</span>
+                </div>
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  className="text-gray-400 hover:text-gray-600"
+                  onClick={() => onEditService(service)}
+                  title="Editar"
+                >
+                  <VscEdit className="h-5 w-5" />
+                </button>
+                <button
+                  className="text-gray-400 hover:text-gray-600"
+                  onClick={() => onDeleteService(service.id)}
+                  title="Eliminar"
+                >
+                  <VscChromeClose className="h-5 w-5" />
+                </button>
+              </div>
             </div>
-
-            <p
-              className="mt-4 text-base text-neutral-500 leading-relaxed max-h-24 overflow-hidden text-ellipsis"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-            >
-              {service.description}
-            </p>
-
-            <div className="flex items-center mt-4 text-neutral-600">
-              <CiClock1 className="mr-2" size={20} />
-              <span>{service.minutes_duration} min</span>
+            <div className="text-sm text-gray-600 mb-5">
+              <p className="mt-1">{service.description}</p>
             </div>
-
-            <div className="flex items-center mt-2 text-neutral-600">
-              <MdOutlineCurrencyExchange className="mr-2" size={20} />
-              <span>${service.price}</span>
-            </div>
-
-            <div
-              className={`mt-4 text-sm font-bold ${
-                service.status === 'Activo' ? 'text-green-600' : 'text-red-500'
-              }`}
-            >
-              Estado: {service.status}
+            <div className="space-y-4">
+              <div className="flex items-center text-sm text-gray-600">
+                <CiClock1 className="h-4 w-4 mr-2" />
+                <span>Duración: {service.minutes_duration} min</span>
+              </div>
+              <div className="flex items-center text-sm text-gray-600">
+                <MdOutlineCurrencyExchange className="h-4 w-4 mr-2 text-light" />
+                <span>Precio: ${service.price}</span>
+              </div>
+              <div className="flex items-center text-sm text-gray-600">
+                <span className="flex items-center">
+                  <VscPulse className="h-4 w-4 mr-2"/>
+                  Estado:
+                  <span
+                    className={
+                      service.status === 'Activo'
+                        ? 'text-green-500 ml-1 font-semibold'
+                        : 'text-red-500 ml-1 font-semibold'
+                    }
+                  >
+                    {service.status}
+                  </span>
+                </span>
+              </div>
             </div>
           </div>
         ))}

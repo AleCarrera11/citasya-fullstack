@@ -3,11 +3,7 @@
 import React, { useState } from 'react';
 import { ServiceFormField } from '../InputField';
 import { VscChromeClose } from "react-icons/vsc";
-
-interface SpecialtyData {
-  id: number;
-  name: string;
-}
+import { SpecialtyData } from '../../types/service';
 
 interface NewServiceProps {
   onClose: () => void;
@@ -77,9 +73,11 @@ export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) 
   }));
 
   return (
-    <main className="max-w-[679px]">
+    <main
+      className="max-w-[800px]" style={{ fontFamily: 'Poppins, sans-serif' }}
+    >
       <div className="flex flex-col py-9 w-full bg-neutral-100 rounded-[30px] shadow-lg">
-        <header className="flex flex-col self-end mr-11 text-4xl font-bold leading-none text-center text-stone-400 w-[404px]">
+        <header className="flex flex-col self-end mr-11 text-4xl font-medium leading-none text-center text-stone-400 w-[404px]">
           <button
             onClick={onClose}
             aria-label="Cerrar modal"
@@ -87,7 +85,7 @@ export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) 
           >
             <VscChromeClose className="text-neutral-600 hover:text-neutral-800 transition-colors" />
           </button>
-          <h1 className="self-center text-yellow-700/60">Nuevo Servicio</h1>
+          <h1 className="self-center text-[#447F98]" style={{ fontFamily: 'Roboto Condensed' }}>Nuevo Servicio</h1>
         </header>
 
         <form className="flex flex-col px-10 mt-8 w-full text-neutral-600">
@@ -157,7 +155,7 @@ export const NewService: React.FC<NewServiceProps> = ({ onClose, specialties }) 
           <button
             onClick={handleAddService}
             type="button"
-            className="self-center px-11 py-5 mt-10 text-base font-bold text-white bg-yellow-700/60 rounded-[40px] hover:bg-yellow-700/80 transition-colors"
+            className="self-center px-11 py-5 mt-10 text-base font-bold text-white bg-[#447F98] rounded-[40px] hover:bg-[#629BB5] transition-colors"
             disabled={loading}
           >
             {loading ? 'Agregando...' : 'Agregar'}
